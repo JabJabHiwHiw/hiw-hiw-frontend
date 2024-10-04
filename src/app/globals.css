@@ -1,27 +1,76 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  .h1 {
+    @apply text-3xl  lg:text-5xl;
+  }
+  .h2 {
+    @apply text-3xl;
+  }
+  .h3 {
+    @apply text-2xl;
+  }
+  .h4 {
+    @apply text-xl;
+  }
+  .h5 {
+    @apply text-base;
+  }
+  .h6 {
+    @apply text-sm;
+  }
+  .small {
+    @apply text-xs;
+  }
+  .p {
+    @apply text-base;
+  }
+  .blockquote {
+    @apply text-base  italic;
+  }
+  .placeholder {
+    @apply text-sm;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* For IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  :root {
+    --reach-combobox: 1;
+  }
+
+  /* [data-reach-combobox-popover] { */
+  /*   border: solid 1px hsla(0, 0%, 0%, 0.25); */
+  /*   background: hsla(0, 100%, 100%, 0.99); */
+  /*   font-size: 85%; */
+  /* } */
+  /**/
+  [data-reach-combobox-list] {
+    list-style: none;
+    user-select: none;
+  }
+
+  /* [data-reach-combobox-option] { */
+  /*   cursor: pointer; */
+  /*   margin: 0; */
+  /*   padding: 0.25rem 0.5rem; */
+  /* } */
+  /**/
+  [data-reach-combobox-option][aria-selected="true"] {
+    background: hsl(211, 10%, 95%);
   }
 }
