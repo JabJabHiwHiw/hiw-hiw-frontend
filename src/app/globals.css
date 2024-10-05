@@ -35,8 +35,8 @@
 }
 
 @layer utilities {
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
   }
 
@@ -70,7 +70,7 @@
   /*   padding: 0.25rem 0.5rem; */
   /* } */
   /**/
-  [data-reach-combobox-option][aria-selected="true"] {
+  [data-reach-combobox-option][aria-selected='true'] {
     background: hsl(211, 10%, 95%);
   }
 }
