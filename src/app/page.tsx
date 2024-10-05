@@ -15,8 +15,41 @@ export default function Home() {
 			<h6 className="h6 font-bold">H6 Bold</h6>
 			<small className="small">small</small>
 			<p className="p">This is a paragraph</p>
+			<p className="p text-high">This is a paragraph</p>
+			<p className="p text-medium">This is a paragraph</p>
+			<p className="p text-placeholder">This is a paragraph</p>
+			<p className="p text-invert">This is a paragraph</p>
+			<p className="p text-disable">This is a paragraph</p>
 			<blockquote className="blockquote">This is a blockquote</blockquote>
 			<div className="text-subtle">This is subtle</div>
+			<div className="flex flex-col">
+				<div className="bg-primary-50 w-full h-6" />
+				<div className="bg-primary-100 w-full h-6" />
+				<div className="bg-primary-200 w-full h-6" />
+				<div className="bg-primary-300 w-full h-6" />
+				<div className="bg-primary-400 w-full h-6" />
+				<div className="bg-primary-500 w-full h-6" />
+				<div className="bg-primary-600 w-full h-6" />
+				<div className="bg-primary-700 w-full h-6" />
+				<div className="bg-primary-800 w-full h-6" />
+				<div className="bg-primary-900 w-full h-6" />
+				<div className="bg-neutral-0 w-full h-6" />
+				<div className="bg-neutral-50 w-full h-6" />
+				<div className="bg-neutral-100 w-full h-6" />
+				<div className="bg-neutral-200 w-full h-6" />
+				<div className="bg-neutral-300 w-full h-6" />
+				<div className="bg-neutral-400 w-full h-6" />
+				<div className="bg-neutral-500 w-full h-6" />
+				<div className="bg-neutral-600 w-full h-6" />
+				<div className="bg-neutral-700 w-full h-6" />
+				<div className="bg-neutral-800 w-full h-6" />
+				<div className="bg-neutral-900 w-full h-6" />
+				<div className="bg-black w-full h-6" />
+				<div className="bg-success w-full h-6" />
+				<div className="bg-error-default w-full h-6" />
+				<div className="bg-error-hover w-full h-6" />
+				<div className="bg-pending w-full h-6" />
+			</div>
 		</div>
 	);
 }
