@@ -1,6 +1,9 @@
 export default function Home() {
 	return (
 		<div>
+      <button className="animate-bounce delay-150 duration-300" type="button">Button A</button>
+      <button className="animate-bounce delay-300 duration-300" type="button">Button B</button>
+      <button className="animate-bounce delay-700 duration-300" type="button">Button C</button>
 			<h1 className="h1">H1 Regular</h1>
 			<h1 className="h1 font-bold">H1 Bold</h1>
 			<h2 className="h2">H2 Regular</h2>
