@@ -73,7 +73,9 @@ export default function DiscovePage() {
             </SelectTrigger>
             <SelectContent className="lg:w-[180px] w-[100px]">
               {categories.map((category) => (
-                <SelectItem value={category}>{category}</SelectItem>
+                <SelectItem key={category} value={category}>
+                  {category}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>

@@ -6,7 +6,7 @@ export default async function DiscoverLayout({
   children: React.ReactNode
 }) {
   //fetch user data
-  let user = 1
+  const user = 1
   if (!user) {
     return redirect('/sign-in')
   }
