@@ -65,7 +65,7 @@ export default function DiscovePage() {
           type="text"
           placeholder="Search by Menu Name, Ingredient"
           className="w-full min-w-[150px] md:w-[465px]"
-        ></Input>
+        />
         <div className="flex gap-3 ">
           <Select>
             <SelectTrigger className="lg:w-[180px] w-[100px]">

@@ -9,7 +9,7 @@ import {
 import { faHeart, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons'
 
-import { type MenuDetail } from '../types'
+import type { MenuDetail } from '../types'
 import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cn } from '@/lib/utils'
@@ -25,7 +25,7 @@ export default function MenuCard(props: MenuDetail) {
             {description}
           </CardDescription>
           {isOwner ? (
-            <button className="w-fit">
+            <button type="button" className="w-fit">
               <FontAwesomeIcon
                 icon={faPenToSquare}
                 size={'1x'}
@@ -33,7 +33,7 @@ export default function MenuCard(props: MenuDetail) {
               ></FontAwesomeIcon>
             </button>
           ) : (
-            <button className="w-fit">
+            <button type="button" className="w-fit">
               <FontAwesomeIcon
                 icon={isFavorite ? faHeart : faHeartRegular}
                 size={'1x'}
@@ -52,7 +52,7 @@ export default function MenuCard(props: MenuDetail) {
             src={imageUrl}
             fill={true}
             className="w-full h-full object-cover rounded-r-xl"
-          ></Image>
+          />
         </CardContent>
       </Card>
     </Link>

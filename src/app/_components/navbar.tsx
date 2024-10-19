@@ -28,7 +28,7 @@ export default function Navbar() {
         >
           Discover
         </Link>
-        <div className="w-[1px] h-6 bg-black"></div>
+        <div className="w-[1px] h-6 bg-black" />
         <Link
           href={'/fridge'}
           className={cn('hover:text-neutral-600', isFridge && 'font-bold')}
@@ -57,7 +57,7 @@ export default function Navbar() {
                 fill={true}
                 alt="logo"
                 className="self-center rounded-full"
-              ></Image>
+              />
             </div>
             <div className="hover:text-neutral-600">{userName}</div>
           </Link>
