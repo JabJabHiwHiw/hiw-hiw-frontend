@@ -24,10 +24,15 @@ export default function MenuCard(props: MenuDetail) {
   const handleCreateMenu = () => {
     router.push('/create-menu')
   }
+  const handleFavorite = (isFavorite: boolean) => {
+    console.log(!isFavorite)
+  }
   return (
     <Card
       className="flex flex-row w-full max-w-[600px] h-[200px] justify-between hover:shadow-lg hover:cursor-pointer"
-      onClick={handleCardClick}
+      onClick={() => {
+        handleCardClick()
+      }}
     >
       <CardHeader className="h4">
         <CardTitle className="h4 bold text-black">{name}</CardTitle>
@@ -35,7 +40,14 @@ export default function MenuCard(props: MenuDetail) {
           {description}
         </CardDescription>
         {isOwner ? (
-          <button type="button" className="w-fit" onClick={handleCreateMenu}>
+          <button
+            type="button"
+            className="w-fit"
+            onClick={(e) => {
+              e.stopPropagation()
+              handleCreateMenu()
+            }}
+          >
             <FontAwesomeIcon
               icon={faPenToSquare}
               size={'1x'}
@@ -43,7 +55,14 @@ export default function MenuCard(props: MenuDetail) {
             ></FontAwesomeIcon>
           </button>
         ) : (
-          <button type="button" className="w-fit">
+          <button
+            type="button"
+            className="w-fit"
+            onClick={(e) => {
+              e.stopPropagation()
+              handleFavorite(isFavorite)
+            }}
+          >
             <FontAwesomeIcon
               icon={isFavorite ? faHeart : faHeartRegular}
               size={'1x'}
