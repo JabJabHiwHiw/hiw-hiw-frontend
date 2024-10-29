@@ -1,5 +1,5 @@
 import MenuCard from '@/app/_components/menuCard'
-import { Menus } from '@/app/types'
+import type { Menus } from '@/app/types'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 

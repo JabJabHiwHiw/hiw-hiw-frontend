@@ -1,4 +1,4 @@
-import { UserData } from '@/app/types'
+import type { UserData } from '@/app/types'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 
