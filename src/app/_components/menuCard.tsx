@@ -52,7 +52,7 @@ export default function MenuCard(props: MenuDetail) {
               icon={faPenToSquare}
               size={'1x'}
               className="text-yellow-300 hover:text-yellow-400"
-            ></FontAwesomeIcon>
+            />
           </button>
         ) : (
           <button
