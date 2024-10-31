@@ -1,3 +1,4 @@
+'use client'
 import {
   Card,
   CardContent,
@@ -13,48 +14,75 @@ import type { MenuDetail } from '../types'
 import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cn } from '@/lib/utils'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 export default function MenuCard(props: MenuDetail) {
   const { id, name, description, imageUrl, isFavorite, isOwner } = props
+  const router = useRouter()
+  const handleCardClick = () => {
+    router.push(`/menus/${id}`)
+  }
+  const handleCreateMenu = () => {
+    router.push('/create-menu')
+  }
+  const handleFavorite = (isFavorite: boolean) => {
+    console.log(!isFavorite)
+  }
   return (
-    <Link href={`/menus/${id}`}>
-      <Card className="flex flex-row w-auto h-[200px] p justify-between">
-        <CardHeader className="h4">
-          <CardTitle className="h4 bold text-black">{name}</CardTitle>
-          <CardDescription className="text-gray-400 h-full">
-            {description}
-          </CardDescription>
-          {isOwner ? (
-            <button type="button" className="w-fit">
-              <FontAwesomeIcon
-                icon={faPenToSquare}
-                size={'1x'}
-                className="text-yellow-300"
-              ></FontAwesomeIcon>
-            </button>
-          ) : (
-            <button type="button" className="w-fit">
-              <FontAwesomeIcon
-                icon={isFavorite ? faHeart : faHeartRegular}
-                size={'1x'}
-                className={cn(
-                  'hover:text-yellow-400',
-                  isFavorite ? 'text-yellow-300' : 'text-yellow-500'
-                )}
-              />
-            </button>
-          )}
-        </CardHeader>
+    <Card
+      className="flex flex-row w-full max-w-[600px] h-[200px] justify-between hover:shadow-lg hover:cursor-pointer"
+      onClick={() => {
+        handleCardClick()
+      }}
+    >
+      <CardHeader className="h4">
+        <CardTitle className="h4 bold text-black">{name}</CardTitle>
+        <CardDescription className="text-gray-400 h-full">
+          {description}
+        </CardDescription>
+        {isOwner ? (
+          <button
+            type="button"
+            className="w-fit"
+            onClick={(e) => {
+              e.stopPropagation()
+              handleCreateMenu()
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faPenToSquare}
+              size={'1x'}
+              className="text-yellow-300 hover:text-yellow-400"
+            />
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="w-fit"
+            onClick={(e) => {
+              e.stopPropagation()
+              handleFavorite(isFavorite)
+            }}
+          >
+            <FontAwesomeIcon
+              icon={isFavorite ? faHeart : faHeartRegular}
+              size={'1x'}
+              className={cn(
+                'hover:text-yellow-400',
+                isFavorite ? 'text-yellow-300' : 'text-yellow-500'
+              )}
+            />
+          </button>
+        )}
+      </CardHeader>
 
-        <CardContent className="flex-none relative h-full p-0 w-[200px] ">
-          <Image
-            alt="MenuPic"
-            src={imageUrl}
-            fill={true}
-            className="w-full h-full object-cover rounded-r-xl"
-          />
-        </CardContent>
-      </Card>
-    </Link>
+      <CardContent className="flex-none relative h-full p-0 w-[200px] ">
+        <Image
+          alt="MenuPic"
+          src={imageUrl}
+          fill={true}
+          className="w-full h-full object-cover rounded-r-xl"
+        />
+      </CardContent>
+    </Card>
   )
 }
