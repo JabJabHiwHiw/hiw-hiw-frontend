@@ -19,10 +19,10 @@ export default function MenuCard(props: MenuDetail) {
   const { id, name, description, imageUrl, isFavorite, isOwner } = props
   const router = useRouter()
   const handleCardClick = () => {
-    router.push(`/menus/${id}`)
+    router.push(`/menu/${id}`)
   }
   const handleCreateMenu = () => {
-    router.push('/create-menu')
+    router.push('/menu/create')
   }
   const handleFavorite = (isFavorite: boolean) => {
     console.log(!isFavorite)
