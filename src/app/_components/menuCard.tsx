@@ -17,7 +17,7 @@ import Link from 'next/link'
 export default function MenuCard(props: MenuDetail) {
   const { id, name, description, imageUrl, isFavorite, isOwner } = props
   return (
-    <Link href={`/menus/${id}`}>
+    <Link href={`/menu/${id}`}>
       <Card className="flex flex-row w-auto h-[200px] p justify-between">
         <CardHeader className="h4">
           <CardTitle className="h4 bold text-black">{name}</CardTitle>
