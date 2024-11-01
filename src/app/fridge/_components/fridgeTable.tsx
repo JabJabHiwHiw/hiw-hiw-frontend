@@ -43,7 +43,7 @@ export default function FridgeTable({
     const updatedTotalPages = Math.ceil(fridgeItems.length / itemsPerPage)
     let updatedCurrentPage = currentPage
     if (currentPage >= updatedTotalPages) {
-      updatedCurrentPage = updatedTotalPages
+      updatedCurrentPage = Math.max(updatedTotalPages, 1)
     }
 
     setTotalPages(updatedTotalPages)
