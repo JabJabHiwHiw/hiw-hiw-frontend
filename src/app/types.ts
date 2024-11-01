@@ -23,3 +23,17 @@ export type Notification = {
   message: string
   expireDate: string
 }
+
+export type FridgeItem = {
+  name: string
+  quantity: string
+  addedDate: Date
+  expiredDate: Date
+  category: string
+  expTag?: string
+}
+
+export type SortItem = {
+  key: string
+  value: 'asc' | 'desc'
+}
