@@ -24,7 +24,7 @@ export default function NotificationItem(props: Notification) {
           <span className="small text-gray-400 h-full ">{expireDate}</span>
         </div>
       </div>
-      <button onClick={handleDelete}>
+      <button type="button" onClick={handleDelete}>
         <FontAwesomeIcon icon={faX} />
       </button>
     </div>
