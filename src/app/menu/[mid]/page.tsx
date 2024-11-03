@@ -1,3 +1,5 @@
+'use client'
+
 import IngredientsTable from "../_components/IngredientTable"
 import NumberOfServing from "../_components/NumberOfServing"
 import Image from 'next/image'
@@ -8,7 +10,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons'
 import { MenuItem } from "../../../../interface"
-export default async function MenuDetailPage({params}: {params:{mid:string}}){
+import { useState } from "react"
+
+export default function MenuDetailPage({params}: {params:{mid:string}}){
     const mid = params.mid
     const mockMenuItem: MenuItem =  {
         "ingredients": [
@@ -48,34 +52,35 @@ export default async function MenuDetailPage({params}: {params:{mid:string}}){
         "image_url": "https://www.gstatic.com/webp/gallery/1.jpg"
     };
 
-    const more_info = {
-        isFavorite: false,
-        isOwner: false,
+    const [isFavorite, setIsFavorite] = useState(false);
+    const toggleFavorite = () => {
+        setIsFavorite(!isFavorite)
     }
 
     return(
-        <div className="flex flex-col items-left p-16 space-y-12 ">
+        <div className="flex flex-col items-left p-16 space-y-12">
             <div className='flex justify-between items-center'>
                 <h1 className="h1 font-bold">{mockMenuItem.name} id:{mid}</h1>
 
-                <button type="button" className="w-fit">
+                <button type="button" className="w-fit"
+                    onClick={toggleFavorite}>
                     <FontAwesomeIcon
-                        icon={more_info.isFavorite ? faHeart : faHeartRegular}
+                        icon={isFavorite ? faHeart : faHeartRegular}
                         size={'2x'}
                         className={cn(
                         'hover:text-yellow-400',
-                        more_info.isFavorite ? 'text-yellow-300' : 'text-yellow-500'
+                        isFavorite ? 'text-yellow-300' : 'text-yellow-500'
                         )}
                     />
                 </button>
             </div>
-            <div className="relative w-full h-[400px]"> {/* Set a specific height */}
+            <div className="relative w-full h-[400px]">
                 <Image
                     alt="MenuPic"
                     src={mockMenuItem.image_url}
-                    layout="fill"  // Make the image fill the parent container
-                    objectFit="cover"  // Maintain aspect ratio and cover the container
-                    className="rounded-xl"  // Rounded edges
+                    layout="fill"  
+                    objectFit="cover"  
+                    className="rounded-xl"  
                 />
             </div>
 
@@ -83,7 +88,7 @@ export default async function MenuDetailPage({params}: {params:{mid:string}}){
             
             <div className='flex flex-col space-y-6'>
                 <h2 className="h3 font-bold">Ingredients</h2>
-                <NumberOfServing/>
+                <NumberOfServing variant="default" initialServings={5}/>
                 <IngredientsTable/>
             </div>
 
@@ -99,21 +104,15 @@ export default async function MenuDetailPage({params}: {params:{mid:string}}){
                 }
             </div>
 
-            <div className='flex gap-4'>
-                <Link href={`/menu/${mid}/check`} passHref className='w-1/2'>
-                    <Button variant="outline" className='w-full'>Check my ingredients</Button>
-                </Link>
-                
-                <Link href={`/menu/${mid}/cook`} passHref className='w-1/2'>
+            <div className='flex flex-col space-y-4 pt-8'>
+                <Link href={`/menu/${mid}/cook`} passHref className='w-full'>
                     <Button variant="yellow" className='w-full'>Cook from my fridge</Button>
                 </Link>
-                
 
+                <Link href={`/discover`} passHref className='w-full'>
+                    <Button variant="secondary" className='w-full'>Back</Button>
+                </Link>
             </div>
-
-            <Link href={`/discover`} passHref className='w-full'>
-                <Button variant="secondary" className='w-full'>Back</Button>
-            </Link>
 
         </div>
 

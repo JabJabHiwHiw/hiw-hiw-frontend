@@ -10,9 +10,6 @@ export default function UpdateFridgeTable() {
     { id: 5, ingredient: 'Fresh basil', amount: '1/2 cup', usedAmount: '1/2 cup', remainingAmount: '' },
   ];
   const [tableData, setTableData] = useState(initialData);
-  const handleDelete = (ingredient: string) => {
-    setTableData((prevData) => prevData.filter((row) => row.ingredient !== ingredient));
-  };
 
   const handleInputChange = (ingredient: string, value: string) => {
     setTableData((prevData) =>

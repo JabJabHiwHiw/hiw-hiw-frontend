@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { Button } from './button';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
@@ -36,14 +36,14 @@ const TableRow: React.FC<TableRowProps> = ({ variant, data, onDelete }) => {
                 <h6 className='pl-2 h6'>To-buy</h6>
             </Button>
           <button onClick={onDelete} className="text-red-500 hover:text-red-700">
-            <FontAwesomeIcon icon={faTrash} />
+            <FontAwesomeIcon icon={faTrashCan} />
           </button>
         </td>
       )}
       {variant === 'delete' && (
         <td className="py-2 px-4 pl-0 flex justify-end">
           <button onClick={onDelete} className="pt-2 text-red-500 hover:text-red-700">
-            <FontAwesomeIcon icon={faTrash} />
+            <FontAwesomeIcon icon={faTrashCan} />
           </button>
         </td>
       )}

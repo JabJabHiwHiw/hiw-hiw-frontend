@@ -14,7 +14,9 @@ export default async function DiscoverLayout({
   return (
     <div className="h-screen w-screen">
       <Navbar />
-      <main>{children}</main>
+      <div>
+        {children}
+      </div>
     </div>
   )
 }
