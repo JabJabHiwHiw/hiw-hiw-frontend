@@ -1,6 +1,9 @@
+import { SignOutButton } from './_components/SignOutButton'
+
 export default function Home() {
   return (
     <div>
+      <SignOutButton />
       <h1 className="h1">H1 Regular</h1>
       <h1 className="h1 font-bold">H1 Bold</h1>
       <h2 className="h2">H2 Regular</h2>
