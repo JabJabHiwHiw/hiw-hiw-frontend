@@ -13,10 +13,15 @@ export default function OauthSignIn() {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsVisible(true)
-    }, 1800)
-  }, [])
+    if (isLoaded && !session) {
+      const timer = setTimeout(() => {
+        setIsVisible(true)
+      }, 800)
+      return () => clearTimeout(timer)
+    } else {
+      setIsVisible(false)
+    }
+  }, [isLoaded, session])
 
   useEffect(() => {
     if (session) {
