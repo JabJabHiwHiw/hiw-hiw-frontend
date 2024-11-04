@@ -1,10 +1,10 @@
 'use client'
 // import { signIn } from '@/app/api/signin'
 import { Button } from '@/components/ui/button'
-import { useState } from 'react'
+// import { useState } from 'react'
 
 export default function TestSigninButton() {
-  const [response, setResponse] = useState('')
+  // const [response, setResponse] = useState('')
   const handleClick = async () => {
     // const rsp = await signIn({
     //   email: '1234234@gmail.com',
@@ -23,7 +23,7 @@ export default function TestSigninButton() {
       >
         Sign in
       </Button>
-      <div>{response}</div>
+      {/* <div>{response}</div> */}
     </div>
   )
 }

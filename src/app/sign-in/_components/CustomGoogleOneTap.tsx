@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import { useClerk } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
@@ -73,6 +74,7 @@ export function CustomGoogleOneTap({
         signInFallbackRedirectUrl: '/example-fallback-path',
       })
     } catch (error) {
+      console.error(error)
       router.push('/sign-in')
     }
   }
@@ -80,6 +82,7 @@ export function CustomGoogleOneTap({
   return (
     <>
       <Script
+        id="google-one-tap"
         src="https://accounts.google.com/gsi/client"
         strategy="beforeInteractive"
       >
