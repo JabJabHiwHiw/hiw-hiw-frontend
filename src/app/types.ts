@@ -17,3 +17,9 @@ export type UserData = {
 export type Menus = {
   menus: MenuDetail[]
 }
+
+export type Notification = {
+  id: string
+  message: string
+  expireDate: string
+}
