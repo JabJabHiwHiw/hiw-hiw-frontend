@@ -76,7 +76,7 @@ export default function Navbar() {
           </PopoverContent>
         </Popover>
         {isProfile ? (
-          <Link href={'/create-menu'}>
+          <Link href={'/menu/create'}>
             <Button variant={'outline'}>Create Menu</Button>
           </Link>
         ) : (
