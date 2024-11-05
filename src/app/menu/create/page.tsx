@@ -128,7 +128,7 @@ export default function CreateMenu(){
                 <Button variant='discard' className='w-1/2'>Discard</Button>
                 <Button variant='yellow' className='w-1/2'>Create Menu</Button>
             </div>
-
+            <p text-white>{category}</p>
         </div>
     )
 }
