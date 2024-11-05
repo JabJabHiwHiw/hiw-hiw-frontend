@@ -119,32 +119,23 @@ export default function FridgeTable({
           {currentItems.map((item, ind) => (
             <FridgeModal key={ind} mode="edit" data={item}>
               <TableRow
-                className={cn(item.expTag === 'Expired' && 'bg-primary-100')}
+                className={cn(item.expCat === 'Expired' && 'bg-primary-100')}
               >
                 <TableCell className="pl-6">{item.name}</TableCell>
                 <TableCell
                   className={cn(
                     'small',
-                    item.expTag === 'Expired' && 'text-error-hover',
-                    item.expTag &&
+                    item.expCat === 'Expired' && 'text-error-hover',
+                    item.expCat &&
                       [
                         'Expires today',
-                        'Expires in 1 day',
                         'Expires in 3 days',
-                      ].includes(item.expTag) &&
-                      'text-error-default',
-                    item.expTag &&
-                      [
                         'Expires in 7 days',
-                        'Expires in 14 days',
-                        'Expires in 30 days',
-                      ].includes(item.expTag) &&
-                      'text-neutral-500',
-                    item.expTag === 'Long Shelf Life (Over 30 days)' &&
-                      'invisible'
+                      ].includes(item.expCat) &&
+                      'text-error-default'
                   )}
                 >
-                  {item.expTag}
+                  {item.expCat}
                 </TableCell>
                 <TableCell>{item.quantity}</TableCell>
                 <TableCell>{item.addedDate.toLocaleDateString()}</TableCell>
