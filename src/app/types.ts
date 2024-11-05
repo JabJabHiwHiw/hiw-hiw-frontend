@@ -30,7 +30,7 @@ export type FridgeItem = {
   addedDate: Date
   expiredDate: Date
   category: string
-  expTag?: string
+  expCat?: string
 }
 
 export type SortItem = {

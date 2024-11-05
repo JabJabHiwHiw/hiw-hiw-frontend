@@ -14,6 +14,7 @@ import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import type { FridgeItem, SortItem } from '@/app/types'
 import FridgeTable from './_components/fridgeTable'
 import FridgeModal from './_components/fridgeModal'
+import { SelectValue } from '@radix-ui/react-select'
 
 export default function FridgePage() {
   const categories = [
@@ -31,12 +32,9 @@ export default function FridgePage() {
   const timeToExpire = [
     'Expired',
     'Expires today',
-    'Expires in 1 day',
-    'Expires in 3 days',
-    'Expires in 7 days',
-    'Expires in 14 days',
-    'Expires in 30 days',
-    'Long Shelf Life (Over 30 days)',
+    'Expires within 3 days',
+    'Expires within 7 days',
+    'All',
   ]
   const mockFridgeItems = [
     {
@@ -57,14 +55,14 @@ export default function FridgePage() {
       name: 'Apple',
       quantity: '1 kilo',
       addedDate: new Date('2024-10-25'),
-      expiredDate: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000),
+      expiredDate: new Date(Date.now()),
       category: 'Fruits',
     },
     {
       name: 'Apple',
       quantity: '10 kilo',
       addedDate: new Date('2024-6-25'),
-      expiredDate: new Date(Date.now() + 20 * 60 * 60 * 1000),
+      expiredDate: new Date(Date.now() + 6 * 60 * 60 * 1000),
       category: 'Fruits',
     },
     {
@@ -113,7 +111,7 @@ export default function FridgePage() {
       name: 'Brown Rice',
       quantity: '2 kilos',
       addedDate: new Date('2024-10-01'),
-      expiredDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+      expiredDate: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
       category: 'Grain',
     },
     {
@@ -134,7 +132,7 @@ export default function FridgePage() {
       name: 'Orange Juice',
       quantity: '1 liter',
       addedDate: new Date('2024-10-24'),
-      expiredDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+      expiredDate: new Date(Date.now() + 1 * 5 * 60 * 60 * 1000),
       category: 'Beverages',
     },
     {
@@ -146,34 +144,34 @@ export default function FridgePage() {
     },
   ]
 
-  const calculateExpTag = (expiredDate: Date) => {
+  const calculateExpCat = (expiredDate: Date) => {
     const today = new Date()
-    const daysToExpire = Math.floor(
-      (expiredDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
-    )
+    today.setHours(0, 0, 0, 0)
+    const expDate = new Date(expiredDate)
+    expDate.setHours(0, 0, 0, 0)
 
+    const daysToExpire = Math.floor(
+      (expDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    )
     if (daysToExpire < 0) return 'Expired'
     if (daysToExpire === 0) return 'Expires today'
-    if (daysToExpire === 1) return 'Expires in 1 day'
-    if (daysToExpire <= 3) return 'Expires in 3 days'
-    if (daysToExpire <= 7) return 'Expires in 7 days'
-    if (daysToExpire <= 14) return 'Expires in 14 days'
-    if (daysToExpire <= 30) return 'Expires in 30 days'
-    return 'Long Shelf Life (Over 30 days)'
+    if (daysToExpire <= 3) return 'Expires within 3 days'
+    if (daysToExpire <= 7) return 'Expires within 7 days'
+    return ''
   }
-  const addExpTag = (items: FridgeItem[]) => {
+  const addExpCat = (items: FridgeItem[]) => {
     return items.map((item) => ({
       ...item,
-      expTag: calculateExpTag(item.expiredDate),
+      expCat: calculateExpCat(item.expiredDate),
     }))
   }
   // data from backend
-  const fridgeItems = addExpTag(mockFridgeItems)
-
+  const fridgeItems = addExpCat(mockFridgeItems)
   const [filteredFridgeItems, setFilteredFridgeItems] =
     useState<FridgeItem[]>(fridgeItems)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedTimeToExpire, setSelectedTimeToExpire] = useState<string[]>([])
+  const [selectedTimeToExpire, setSelectedTimeToExpire] =
+    useState<string>('All')
   const [sortCriteria, setSortCriteria] = useState<SortItem[]>([
     { key: 'name', value: 'asc' },
   ])
@@ -185,9 +183,29 @@ export default function FridgePage() {
         selectedCategories.includes(item.category)
       )
     }
-    if (selectedTimeToExpire.length != 0) {
-      newFridgeItems = newFridgeItems.filter((item) =>
-        selectedTimeToExpire.includes(item.expTag || '')
+    if (selectedTimeToExpire === 'Expired') {
+      newFridgeItems = newFridgeItems.filter(
+        (item) => item.expCat === 'Expired'
+      )
+    } else if (selectedTimeToExpire === 'Expires today') {
+      newFridgeItems = newFridgeItems.filter(
+        (item) => item.expCat === 'Expires today'
+      )
+    } else if (selectedTimeToExpire === 'Expires within 3 days') {
+      newFridgeItems = newFridgeItems.filter(
+        (item) =>
+          item.expCat &&
+          ['Expires today', 'Expires within 3 days'].includes(item.expCat)
+      )
+    } else if (selectedTimeToExpire === 'Expires within 7 days') {
+      newFridgeItems = newFridgeItems.filter(
+        (item) =>
+          item.expCat &&
+          [
+            'Expires today',
+            'Expires within 3 days',
+            'Expires within 7 days',
+          ].includes(item.expCat)
       )
     }
     newFridgeItems = sortFridgeItems(newFridgeItems)
@@ -209,15 +227,9 @@ export default function FridgePage() {
     )
   }
   const handleSelectTimeToExpire = (time: string) => {
-    if (!selectedTimeToExpire.includes(time)) {
-      setSelectedTimeToExpire([...selectedTimeToExpire, time])
-    }
+    setSelectedTimeToExpire(time)
   }
-  const handleRemoveTimeToExpire = (time: string) => {
-    setSelectedTimeToExpire(
-      selectedTimeToExpire.filter((item) => item !== time)
-    )
-  }
+
   const handleSortToggle = (key: string) => {
     setSortCriteria((prevCriteria: SortItem[]) => {
       const existingCriterion = prevCriteria.find(
@@ -265,9 +277,12 @@ export default function FridgePage() {
               ))}
             </SelectContent>
           </Select>
-          <Select onValueChange={handleSelectTimeToExpire}>
+          <Select
+            onValueChange={handleSelectTimeToExpire}
+            value={selectedTimeToExpire}
+          >
             <SelectTrigger className="md:w-[180px] w-[100px]">
-              <span>Time To Expire</span>
+              <SelectValue></SelectValue>
             </SelectTrigger>
             <SelectContent className="md:w-[180px] w-[100px]">
               {timeToExpire.map((time) => (
@@ -296,20 +311,6 @@ export default function FridgePage() {
             <span>{category}</span>
             <button
               onClick={() => handleRemoveCategory(category)}
-              className="flex items-center justify-center"
-            >
-              <FontAwesomeIcon icon={faTimes} size={'1x'} />
-            </button>
-          </div>
-        ))}
-        {selectedTimeToExpire.map((time) => (
-          <div
-            key={time}
-            className="flex items-center bg-primary-200 border border-2 border-primary-300 px-4 py-2 rounded-full text-sm gap-2"
-          >
-            <span>{time}</span>
-            <button
-              onClick={() => handleRemoveTimeToExpire(time)}
               className="flex items-center justify-center"
             >
               <FontAwesomeIcon icon={faTimes} size={'1x'} />
