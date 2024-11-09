@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation'
 import Navbar from '../_components/navbar'
+import "@uploadthing/react/styles.css";
+
 export default async function DiscoverLayout({
   children,
 }: {
