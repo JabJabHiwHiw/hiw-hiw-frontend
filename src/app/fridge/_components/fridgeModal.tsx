@@ -42,6 +42,7 @@ import { format } from 'date-fns'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import type { FridgeItem } from '@/app/types'
+import { ConfirmationModal } from './confirmationModal'
 
 const ingredients = [
   { id: 'id_1a2b3c', name: 'Apple', category: 'Fruits' },
@@ -96,7 +97,8 @@ export default function FridgeModal({
   children: React.ReactNode
 }) {
   const [open, setOpen] = useState(false)
-  const [isExpEnabled, setIsExpEnabled] = useState(true)
+  const [openCombobox, setOpenCombobox] = useState(false)
+  const [isExpEnabled, setIsExpEnabled] = useState(false)
   const [days, setDays] = useState(7)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -119,10 +121,28 @@ export default function FridgeModal({
       expiredDate:
         data?.expiredDate || new Date(Date.now() + days * 24 * 60 * 60 * 1000),
     })
-  }, [data, days, form])
+  }, [data])
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    if (mode === 'add') {
+      createFridgeItem(values)
+    } else if (mode === 'edit') {
+      updateFridgeItem(values)
+    }
+    setOpen(false)
+  }
+
+  const createFridgeItem = (values: z.infer<typeof formSchema>) => {
+    console.log('Creating fridge item', values)
+  }
+
+  const updateFridgeItem = (values: z.infer<typeof formSchema>) => {
+    console.log('Updating fridge item', values)
+  }
+
+  const handleRemoveFridgeItem = (id: string) => {
+    console.log('Removing fridge item', id)
+    setOpen(false)
   }
 
   const handleExpSwitchChange = (checked: boolean) => {
@@ -145,7 +165,7 @@ export default function FridgeModal({
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild className="cursor-pointer">
         {children}
       </DialogTrigger>
@@ -168,12 +188,16 @@ export default function FridgeModal({
                 <FormItem className="flex flex-col">
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Popover modal={true} open={open} onOpenChange={setOpen}>
+                    <Popover
+                      modal={true}
+                      open={openCombobox}
+                      onOpenChange={setOpenCombobox}
+                    >
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
                           role="combobox"
-                          aria-expanded={open}
+                          aria-expanded={openCombobox}
                           className="w-full justify-between border-input"
                         >
                           {ingredients.find(
@@ -197,7 +221,7 @@ export default function FridgeModal({
                                   value={ingredient.id}
                                   onSelect={() => {
                                     form.setValue('ingredientId', ingredient.id)
-                                    setOpen(false)
+                                    setOpenCombobox(false)
                                   }}
                                 >
                                   <Check
@@ -369,9 +393,15 @@ export default function FridgeModal({
                   <Button variant="yellow" className="w-full" type="submit">
                     Save Change
                   </Button>
-                  <Button variant="gray" className="w-full" type="submit">
-                    Remove Item
-                  </Button>
+                  <ConfirmationModal
+                    title="Are you sure you want to remove this item?"
+                    desc=""
+                    onConfirm={() => handleRemoveFridgeItem(data?.id || '')}
+                  >
+                    <Button variant="gray" className="w-full" type="button">
+                      Remove Item
+                    </Button>
+                  </ConfirmationModal>
                 </>
               )}
             </div>
