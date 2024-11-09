@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['www.gstatic.com'],
+    domains: ['www.gstatic.com','utfs.io'],
   },
   env: {
     NEXT_PUBLIC_COOK_SERVICE_GRPC_ENDPOINT:
