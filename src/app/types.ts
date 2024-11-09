@@ -49,6 +49,7 @@ export type Notification = {
 }
 
 export type FridgeItem = {
+  id: string
   name: string
   quantity: string
   addedDate: Date

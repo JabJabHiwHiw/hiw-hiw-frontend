@@ -38,6 +38,7 @@ export default function FridgePage() {
   ]
   const mockFridgeItems = [
     {
+      id: 'f5d19a8b-4d56-41e4-a292-5e35114bc7a7',
       name: 'Fresh Milk',
       quantity: '1 liter',
       addedDate: new Date('2024-10-25'),
@@ -45,6 +46,7 @@ export default function FridgePage() {
       category: 'Dairy',
     },
     {
+      id: '8c607256-372e-4c82-93b0-cb727f01b441',
       name: 'Fresh Milk',
       quantity: '10 liter',
       addedDate: new Date('2024-10-26'),
@@ -52,6 +54,7 @@ export default function FridgePage() {
       category: 'Dairy',
     },
     {
+      id: 'ce34f1e1-71ab-418b-bf92-9a6fded8cce4',
       name: 'Apple',
       quantity: '1 kilo',
       addedDate: new Date('2024-10-25'),
@@ -59,6 +62,7 @@ export default function FridgePage() {
       category: 'Fruits',
     },
     {
+      id: '1ff92d36-7fc5-4c0b-90ad-bd022e9c6d51',
       name: 'Apple',
       quantity: '10 kilo',
       addedDate: new Date('2024-6-25'),
@@ -66,6 +70,7 @@ export default function FridgePage() {
       category: 'Fruits',
     },
     {
+      id: 'a29d139b-45b4-4d7a-bb26-c6f9bfe8e658',
       name: 'Apple',
       quantity: '100 kilo',
       addedDate: new Date('2024-10-25'),
@@ -73,6 +78,7 @@ export default function FridgePage() {
       category: 'Fruits',
     },
     {
+      id: '6eaa26cd-69c2-48a4-b8de-8cf650d0888d',
       name: 'Carrot',
       quantity: '500 grams',
       addedDate: new Date('2024-10-01'),
@@ -80,6 +86,7 @@ export default function FridgePage() {
       category: 'Vegetables',
     },
     {
+      id: '7d04fe5b-1f8e-4091-b575-e9b29d8e2e6c',
       name: 'Chicken Breast',
       quantity: '9 kilo',
       addedDate: new Date('2024-10-19'),
@@ -87,6 +94,7 @@ export default function FridgePage() {
       category: 'Meat and Poultry',
     },
     {
+      id: 'f8c2c6f4-b49d-4a5c-8501-d6899d77d4ec',
       name: 'Chicken Breast',
       quantity: '5 kilo',
       addedDate: new Date('2024-10-18'),
@@ -94,6 +102,7 @@ export default function FridgePage() {
       category: 'Meat and Poultry',
     },
     {
+      id: 'c7048812-287d-4c2b-b0a1-bdc276b18e75',
       name: 'Chicken Breast',
       quantity: '20 kilo',
       addedDate: new Date('2024-10-11'),
@@ -101,6 +110,7 @@ export default function FridgePage() {
       category: 'Meat and Poultry',
     },
     {
+      id: 'db6b4909-8a80-493d-835d-8d5f840eb601',
       name: 'Salmon Fillet',
       quantity: '250 grams',
       addedDate: new Date('2024-10-10'),
@@ -108,6 +118,7 @@ export default function FridgePage() {
       category: 'Seafood',
     },
     {
+      id: '722b0e8e-0833-44b2-b810-d1f9876d1bbd',
       name: 'Brown Rice',
       quantity: '2 kilos',
       addedDate: new Date('2024-10-01'),
@@ -115,6 +126,7 @@ export default function FridgePage() {
       category: 'Grain',
     },
     {
+      id: 'ec2a15c1-55ca-4f6b-a888-8357d528e2f1',
       name: 'Ketchup',
       quantity: '500 ml',
       addedDate: new Date('2024-01-01'),
@@ -122,6 +134,7 @@ export default function FridgePage() {
       category: 'Sauce and Condiment',
     },
     {
+      id: 'b858e201-e47e-4886-8bba-79555a63b381',
       name: 'Basil',
       quantity: '100 grams',
       addedDate: new Date('2024-10-20'),
@@ -129,6 +142,7 @@ export default function FridgePage() {
       category: 'Herbs and Spices',
     },
     {
+      id: 'bb5a6f7f-8e4d-4c9d-a233-070b2b078d94',
       name: 'Orange Juice',
       quantity: '1 liter',
       addedDate: new Date('2024-10-24'),
@@ -136,6 +150,7 @@ export default function FridgePage() {
       category: 'Beverages',
     },
     {
+      id: '3a08c7d7-d318-44a1-bd13-65f27ffeb417',
       name: 'Flour',
       quantity: '5 kilos',
       addedDate: new Date('2024-01-01'),
