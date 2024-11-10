@@ -7,7 +7,7 @@ export default function SsoCallback() {
   const router = useRouter()
 
   useEffect(() => {
-    router.push('/getuserdata')
+    router.push('/discover')
   }, [])
 
   return <div>Processing sign-in...</div>

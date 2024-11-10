@@ -64,7 +64,9 @@ export default function OauthSigninButton({
   return (
     <Button
       className="gap-x-2 px-2 w-full active:bg-slate-200"
-      onClick={() => handleSignIn(provider)}
+      onClick={() => {
+        handleSignIn(provider)
+      }}
       variant="outline"
     >
       <div className="flex flex-none">

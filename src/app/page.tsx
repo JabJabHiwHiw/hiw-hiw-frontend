@@ -1,4 +1,4 @@
-import { SignOutButton } from './_components/SignOutButton'
+import { SignOutButton } from './profile/_components/SignOutButton'
 
 export default function Home() {
   return (
