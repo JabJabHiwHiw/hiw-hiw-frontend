@@ -1,5 +1,5 @@
+import { SignOutButton } from '@/app/profile/_components/SignOutButton'
 import type { UserData } from '@/app/types'
-import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 
 export default function UserProfile(props: UserData) {
@@ -26,9 +26,7 @@ export default function UserProfile(props: UserData) {
             <div className="font-bold">{email}</div>
           </div>
         </div>
-        <Button variant={'outline'} className="w-full">
-          Logout
-        </Button>
+        <SignOutButton />
       </div>
     </div>
   )
