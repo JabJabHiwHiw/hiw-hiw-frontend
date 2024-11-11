@@ -1,3 +1,31 @@
+export type Menu = {
+  id: string
+  name: string
+  description: string
+  ingredients: RequireIngredient[]
+  category: string
+  servings: number
+  created_by: string
+  imageUrl: string
+  steps: Step[]
+}
+export type Step = {
+  step_no: number
+  step: string
+}
+
+export type RequireIngredient = {
+  name: string
+  required_quantity: string
+  ingredient_id: string
+}
+
+export type Ingredient = {
+  id: string
+  name: string
+  category: string
+}
+
 export type MenuDetail = {
   id: string
   name: string
@@ -12,10 +40,6 @@ export type UserData = {
   username: string
   email: string
   profileImageURL: string
-}
-
-export type Menus = {
-  menus: MenuDetail[]
 }
 
 export type Notification = {
