@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import type { Menu } from '../types'
 import _ from 'lodash'
@@ -27,7 +27,7 @@ export default function DiscovePage() {
   //mock props
   const [menus, setMenus] = useState<Menu[]>([])
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [favoriteMenus, setFavoriteMenus] = useState<Menu[]>([])
+  const [favoriteMenusId, setFavoriteMenusId] = useState<string[]>([])
   const [filterByCategory, setFilterByCategory] = useState<string>('all')
   const [filterByFridge, setFilterByFridge] = useState<string>('all')
   const [searchTerm, setSearchTerm] = useState<string>('')
@@ -38,23 +38,38 @@ export default function DiscovePage() {
   const [filterFridgeMenus, setFilterFridgeMenus] = useState<Menu[]>([])
   const { session } = useSession()
 
-  //fetch favorite menu
   useEffect(() => {
+    if (!user) return
+    console.log('user:', user)
+  }, [user])
+
+  const fetchFavoriteMenus = async () => {
     if (!session || !user) return
-    session.getToken().then((token) => {
-      // fetch favorite menu
+    const token = await session.getToken()
+    if (!token) return
+    setLoading(true)
+    try {
       axios
-        .get('http://137.184.249.83:80/user', {
+        .get('http://localhost:8080/user/favorite-menus', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
-          const favoriteMenus: Menu[] = response.data.favorite_menus
-          setFavoriteMenus(favoriteMenus)
+          const favoriteMenus: string[] = response.data.favorite_menus
+          setFavoriteMenusId(favoriteMenus ?? [])
         })
-    })
-  }, [user, session])
+    } catch (error) {
+      console.error('Error fetching favorite menus:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  //fetch favorite menu
+  useEffect(() => {
+    fetchFavoriteMenus()
+  }, [session, user])
 
   useEffect(() => {
     setLoading(true)
@@ -102,9 +117,11 @@ export default function DiscovePage() {
           .then((response) => {
             const fridgeData = response.data.items
             console.log('fridgeData:', fridgeData)
-            const filterByFridge = fridgeData.map((item: { ingredient_id: string }) => {
-              return item.ingredient_id
-            })
+            const filterByFridge = fridgeData.map(
+              (item: { ingredient_id: string }) => {
+                return item.ingredient_id
+              }
+            )
             return filterByFridge
           })
         fridgeItems.then((items) => {
@@ -116,16 +133,22 @@ export default function DiscovePage() {
               return responses.flatMap((response) => response.data)
             }
           )
-          const requests = ingredientData.then((response) => response.map((item) => 
-            axios.get(`http://137.184.249.83:80/food/menu/search?query=${item.ingredient.name}`)
-          ))
-
-          requests.then((reqs) => Promise.all(reqs)).then((responses) => {
-            const menusData = responses.flatMap(
-              (response) => response.data.menus
+          const requests = ingredientData.then((response) =>
+            response.map((item) =>
+              axios.get(
+                `http://137.184.249.83:80/food/menu/search?query=${item.ingredient.name}`
+              )
             )
-            setFilterFridgeMenus(menusData)
-          })
+          )
+
+          requests
+            .then((reqs) => Promise.all(reqs))
+            .then((responses) => {
+              const menusData = responses.flatMap(
+                (response) => response.data.menus
+              )
+              setFilterFridgeMenus(menusData)
+            })
         })
         setLoading(false)
       })
@@ -236,10 +259,10 @@ export default function DiscovePage() {
                   ? menu.imageUrl
                   : 'https://www.gstatic.com/webp/gallery/1.jpg'
               }
-              // isFavorite={menu.id in favoriteMenus? true : false}
-              isFavorite={false}
+              isFavorite={favoriteMenusId.includes(menu.id)}
               isOwner={menu.created_by === user.id}
               name={menu.name}
+              onFavoriteClick={fetchFavoriteMenus} // Pass the function here
             />
           ))}
       </div>

@@ -18,20 +18,20 @@ export default function Test() {
     if (!session) return
     console.log('Session:', session)
     if (isSessionLoaded && isUserLoaded && session && user) {
-      const handleStore = async () => {
-        const rsp = await registerAuthApi(
-          user.fullName,
-          user.emailAddresses[0].emailAddress,
-          user.id,
-          user.imageUrl
-        )
-        if (rsp && rsp.user_id) {
-          localStorage.setItem('userId', rsp.user_id)
-        } else {
-          console.error('Failed to register user or retrieve user_id')
-        }
-      }
-      handleStore()
+      // const handleStore = async () => {
+      //   const rsp = await registerAuthApi(
+      //     user.fullName,
+      //     user.emailAddresses[0].emailAddress,
+      //     user.id,
+      //     user.imageUrl
+      //   )
+      //   if (rsp && rsp.user_id) {
+      //     localStorage.setItem('userId', rsp.user_id)
+      //   } else {
+      //     console.error('Failed to register user or retrieve user_id')
+      //   }
+      // }
+      // handleStore()
       router.push('/discover')
     }
   }, [session, isSessionLoaded, isUserLoaded, user])

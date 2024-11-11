@@ -15,8 +15,24 @@ import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
-export default function MenuCard(props: MenuDetail) {
-  const { id, name, description, imageUrl, isFavorite, isOwner } = props
+import { useSession } from '@clerk/nextjs'
+import { handleFavorite } from '../api/auth/auth'
+import { RefObject } from 'react'
+
+interface MenuCardProps extends MenuDetail {
+  onFavoriteClick: () => void
+}
+
+export default function MenuCard(props: MenuCardProps) {
+  const {
+    id,
+    name,
+    description,
+    imageUrl,
+    isFavorite,
+    isOwner,
+    onFavoriteClick,
+  } = props
   const router = useRouter()
   const handleCardClick = () => {
     router.push(`/menu/${id}`)
@@ -24,9 +40,17 @@ export default function MenuCard(props: MenuDetail) {
   const handleCreateMenu = () => {
     router.push('/menu/create')
   }
-  const handleFavorite = (isFavorite: boolean) => {
-    console.log(!isFavorite)
+  const { isLoaded: isSessionLoded, session } = useSession()
+
+  const handleFavoriteClick = async () => {
+    if (session) {
+      const token = await session.getToken()
+      const rsp = await handleFavorite(id, isFavorite, token ?? '')
+      // console.log('session:', token)
+    }
+    onFavoriteClick()
   }
+
   return (
     <Card
       className="flex flex-row w-full min-w-[450px] max-w-[550px] h-[200px] justify-between hover:shadow-lg hover:cursor-pointer"
@@ -60,7 +84,7 @@ export default function MenuCard(props: MenuDetail) {
             className="w-fit"
             onClick={(e) => {
               e.stopPropagation()
-              handleFavorite(isFavorite)
+              handleFavoriteClick()
             }}
           >
             <FontAwesomeIcon
