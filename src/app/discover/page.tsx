@@ -102,13 +102,13 @@ export default function DiscovePage() {
           .then((response) => {
             const fridgeData = response.data.items
             console.log('fridgeData:', fridgeData)
-            const filterByFridge = fridgeData.map((item) => {
+            const filterByFridge = fridgeData.map((item: { ingredient_id: string }) => {
               return item.ingredient_id
             })
             return filterByFridge
           })
         fridgeItems.then((items) => {
-          const ingredient_requests = items.map((item) =>
+          const ingredient_requests = items.map((item: string) =>
             axios.get(`http://137.184.249.83:80/food/ingredient/${item}`)
           )
           const ingredientData = Promise.all(ingredient_requests).then(
@@ -152,7 +152,7 @@ export default function DiscovePage() {
         setSearchMenus(menus)
       }
     }, 500),
-    [menus]
+    []
   )
 
   useEffect(() => {
