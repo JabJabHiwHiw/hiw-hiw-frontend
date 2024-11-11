@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import type { FridgeItem, SortItem } from '@/app/types'
+import type { FridgeItem, Ingredient, SortItem } from '@/app/types'
 import SortButton from './sortButton'
 import {
   Pagination,
@@ -25,10 +25,14 @@ export default function FridgeTable({
   fridgeItems,
   sortCriteria,
   handleSortToggle,
+  ingredients,
+  onFinish,
 }: {
   fridgeItems: FridgeItem[]
   sortCriteria: SortItem[]
   handleSortToggle: (key: string) => void
+  ingredients: Ingredient[]
+  onFinish: () => void
 }) {
   const itemsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1)
@@ -40,6 +44,7 @@ export default function FridgeTable({
   )
 
   useEffect(() => {
+    console.log('fridge items', fridgeItems)
     const updatedTotalPages = Math.ceil(fridgeItems.length / itemsPerPage)
     let updatedCurrentPage = currentPage
     if (currentPage >= updatedTotalPages) {
@@ -117,7 +122,13 @@ export default function FridgeTable({
         </TableHeader>
         <TableBody>
           {currentItems.map((item, ind) => (
-            <FridgeModal key={ind} mode="edit" data={item}>
+            <FridgeModal
+              key={ind}
+              mode="edit"
+              data={item}
+              ingredients={ingredients}
+              onFinish={onFinish}
+            >
               <TableRow
                 className={cn(item.expCat === 'Expired' && 'bg-primary-100')}
               >

@@ -50,12 +50,25 @@ export type Notification = {
 
 export type FridgeItem = {
   id: string
-  name: string
+  name?: string
   quantity: string
   addedDate: Date
   expiredDate: Date
-  category: string
+  category?: string
   expCat?: string
+}
+
+export type FridgeRaw = {
+  id: string
+  user_id: string
+  ingredient_id: string
+  quantity: string
+  added_date: {
+    seconds: number
+  }
+  expired_date: {
+    seconds: number
+  }
 }
 
 export type SortItem = {
