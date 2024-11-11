@@ -13,28 +13,29 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from '@/components/ui/popover'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import type { Notification } from '../types'
+import { useUser } from '@clerk/nextjs'
 
 export default function Navbar() {
   const pathName = usePathname()
   const isFridge = pathName.startsWith('/fridge')
   const isDiscover = pathName.startsWith('/discover')
   const isProfile = pathName.startsWith('/profile')
-
+  const [notification, setNotification] = useState<Notification[]>([])
   //query user data
-  const profileImageURL = 'https://www.gstatic.com/webp/gallery/1.jpg'
-  const userName = 'John Doe'
-  const notification = [
-    {
-      id: '1',
-      message: 'You have a new notification',
-      expireDate: '2022-01-01',
-    },
-    {
-      id: '2',
-      message: 'You have a new notification',
-      expireDate: '2022-01-01',
-    },
-  ]
+  const { isLoaded: isUserLoaded, user } = useUser()
+
+  useEffect(() => {
+    axios.get('http://137.184.249.83/food/fridge/expiring').then((response) => {
+      console.log('response:', response)
+      const notificationData: Notification[] = response.data
+      console.log('noti:', notificationData)
+      // setNotification(notificationData)
+    })
+  }, [notification])
+  // console.log('noti:', notification)
 
   return (
     <div className="h4 h-20 w-full bg-primary-300 justify-between items-center flex px-8 py-3">
@@ -70,9 +71,15 @@ export default function Navbar() {
             sideOffset={-32}
             className={cn('w-fit lg:w-[440px]')}
           >
-            {notification.map((item) => (
-              <NotificationItem key={item.id} {...item} />
-            ))}
+            {notification.length !== 0 ? (
+              notification.map((item) => (
+                <NotificationItem key={item.id} {...item} />
+              ))
+            ) : (
+              <div className="flex items-center justify-center w-[200px] lg:w-full h-[100px] text-gray-200">
+                No Notification
+              </div>
+            )}
           </PopoverContent>
         </Popover>
         {isProfile ? (
@@ -82,14 +89,18 @@ export default function Navbar() {
         ) : (
           <Link className="flex gap-2 items-center" href={'/profile'}>
             <div className="relative w-12 h-12 rounded-full">
-              <Image
-                src={profileImageURL}
-                fill={true}
-                alt="logo"
-                className="self-center rounded-full"
-              />
+              {isUserLoaded && user && (
+                <Image
+                  src={user.imageUrl}
+                  fill={true}
+                  alt="logo"
+                  className="self-center rounded-full"
+                />
+              )}
             </div>
-            <div className="hover:text-neutral-600">{userName}</div>
+            {isUserLoaded && user && (
+              <div className="hover:text-neutral-600">{user.fullName}</div>
+            )}
           </Link>
         )}
       </div>

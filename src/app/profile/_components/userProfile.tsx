@@ -1,9 +1,11 @@
-import { SignOutButton } from '@/app/profile/_components/SignOutButton'
 import type { UserData } from '@/app/types'
+import { Button } from '@/components/ui/button'
+import { useClerk } from '@clerk/nextjs'
 import Image from 'next/image'
 
 export default function UserProfile(props: UserData) {
   const { username, email, profileImageURL } = props
+  const { signOut } = useClerk()
   return (
     <div className="flex flex-col w-[450px] ">
       <div className="h2 font-bold">Profile</div>
@@ -26,7 +28,13 @@ export default function UserProfile(props: UserData) {
             <div className="font-bold">{email}</div>
           </div>
         </div>
-        <SignOutButton />
+        <Button
+          variant={'outline'}
+          className="w-full"
+          onClick={() => signOut({ redirectUrl: '/' })}
+        >
+          Logout
+        </Button>
       </div>
     </div>
   )
