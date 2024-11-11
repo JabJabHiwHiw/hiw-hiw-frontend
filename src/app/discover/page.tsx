@@ -152,7 +152,7 @@ export default function DiscovePage() {
         setSearchMenus(menus)
       }
     }, 500),
-    []
+    [menus]
   )
 
   useEffect(() => {
