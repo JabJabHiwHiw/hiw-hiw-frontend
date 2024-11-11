@@ -12,7 +12,7 @@ export default function DiscovePage() {
   //mock prop
   const prop = [
     {
-      id: '1',
+      id: "5f698144-1952-4ba1-b721-8fbbdce6011f",
       name: 'Menu Name',
       description:
         'Menu Description ja Menu Description ja Menu Description ja Menu Description ja',
@@ -21,7 +21,7 @@ export default function DiscovePage() {
       isOwner: true,
     },
     {
-      id: '2',
+      id: "2ea0b8a5-75fb-4283-86b3-09c1d3d93746",
       name: 'Menu Name 2',
       description:
         'Menu Description ja Menu Description ja Menu Description ja Menu Description ja',
@@ -30,7 +30,7 @@ export default function DiscovePage() {
       isOwner: false,
     },
     {
-      id: '3',
+      id: "65829b34-f716-4fb7-9844-f27c6c6ccf31",
       name: 'Menu Name 3',
       description:
         'Menu Description ja Menu Description ja Menu Description ja Menu Description ja',
