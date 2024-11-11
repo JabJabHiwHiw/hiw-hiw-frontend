@@ -29,7 +29,7 @@ export default function MenuCard(props: MenuDetail) {
   }
   return (
     <Card
-      className="flex flex-row w-full max-w-[600px] h-[200px] justify-between hover:shadow-lg hover:cursor-pointer"
+      className="flex flex-row w-full min-w-[450px] max-w-[550px] h-[200px] justify-between hover:shadow-lg hover:cursor-pointer"
       onClick={() => {
         handleCardClick()
       }}
