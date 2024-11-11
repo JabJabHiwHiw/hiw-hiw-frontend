@@ -41,41 +41,11 @@ import { CalendarIcon } from '@radix-ui/react-icons'
 import { format } from 'date-fns'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import type { FridgeItem } from '@/app/types'
+import type { FridgeItem, Ingredient } from '@/app/types'
 import { ConfirmationModal } from './confirmationModal'
+import axios from 'axios'
+import { useSession } from '@clerk/nextjs'
 
-const ingredients = [
-  { id: 'id_1a2b3c', name: 'Apple', category: 'Fruits' },
-  { id: 'id_4d5e6f', name: 'Baking Powder', category: 'Baking Supplies' },
-  { id: 'id_7g8h9i', name: 'Banana', category: 'Fruits' },
-  { id: 'id_j1k2l3', name: 'Basil', category: 'Herbs and Spices' },
-  { id: 'id_m4n5o6', name: 'Beef Steak', category: 'Meat and Poultry' },
-  { id: 'id_p7q8r9', name: 'Broccoli', category: 'Vegetables' },
-  { id: 'id_s1t2u3', name: 'Brown Rice', category: 'Grain' },
-  { id: 'id_v4w5x6', name: 'Carrot', category: 'Vegetables' },
-  { id: 'id_y7z8a9', name: 'Cheddar Cheese', category: 'Dairy' },
-  { id: 'id_b1c2d3', name: 'Chicken Breast', category: 'Meat and Poultry' },
-  { id: 'id_e4f5g6', name: 'Cinnamon', category: 'Herbs and Spices' },
-  { id: 'id_h7i8j9', name: 'Crab', category: 'Seafood' },
-  { id: 'id_k1l2m3', name: 'Flour', category: 'Baking Supplies' },
-  { id: 'id_n4o5p6', name: 'Fresh Milk', category: 'Dairy' },
-  { id: 'id_q7r8s9', name: 'Grapes', category: 'Fruits' },
-  { id: 'id_t1u2v3', name: 'Hot Sauce', category: 'Sauce and Condiment' },
-  { id: 'id_w4x5y6', name: 'Ketchup', category: 'Sauce and Condiment' },
-  { id: 'id_z7a8b9', name: 'Lemonade', category: 'Beverages' },
-  { id: 'id_c1d2e3', name: 'Orange Juice', category: 'Beverages' },
-  { id: 'id_f4g5h6', name: 'Oregano', category: 'Herbs and Spices' },
-  { id: 'id_i7j8k9', name: 'Pork Chop', category: 'Meat and Poultry' },
-  { id: 'id_l1m2n3', name: 'Potato', category: 'Vegetables' },
-  { id: 'id_o4p5q6', name: 'Quinoa', category: 'Grain' },
-  { id: 'id_r7s8t9', name: 'Salmon Fillet', category: 'Seafood' },
-  { id: 'id_u1v2w3', name: 'Shrimp', category: 'Seafood' },
-  { id: 'id_x4y5z6', name: 'Soy Sauce', category: 'Sauce and Condiment' },
-  { id: 'id_a7b8c9', name: 'Sparkling Water', category: 'Beverages' },
-  { id: 'id_d1e2f3', name: 'Sugar', category: 'Baking Supplies' },
-  { id: 'id_g4h5i6', name: 'Whole Grain Bread', category: 'Grain' },
-  { id: 'id_j7k8l9', name: 'Yogurt', category: 'Dairy' },
-]
 const formSchema = z.object({
   ingredientId: z.string().min(1, { message: 'Name is required.' }),
   quantity: z.string().min(1, { message: 'Quantity is required.' }),
@@ -91,11 +61,30 @@ export default function FridgeModal({
   mode = 'add',
   data,
   children,
+  ingredients,
+  onFinish,
 }: {
   mode?: 'add' | 'edit'
   data?: FridgeItem
   children: React.ReactNode
+  ingredients: Ingredient[]
+  onFinish: () => void
 }) {
+  const { isLoaded: isSessionLoaded, session } = useSession()
+  const [token, setToken] = useState<string | null>(null)
+  useEffect(() => {
+    if (isSessionLoaded && session) {
+      session
+        .getToken()
+        .then((fetchedToken) => {
+          setToken(fetchedToken)
+          console.log('Fetched token:', fetchedToken)
+        })
+        .catch((error) => {
+          console.error('Error fetching token:', error)
+        })
+    }
+  }, [isSessionLoaded, session])
   const [open, setOpen] = useState(false)
   const [openCombobox, setOpenCombobox] = useState(false)
   const [isExpEnabled, setIsExpEnabled] = useState(false)
@@ -129,20 +118,85 @@ export default function FridgeModal({
     } else if (mode === 'edit') {
       updateFridgeItem(values)
     }
-    setOpen(false)
   }
 
-  const createFridgeItem = (values: z.infer<typeof formSchema>) => {
+  const createFridgeItem = async (values: z.infer<typeof formSchema>) => {
     console.log('Creating fridge item', values)
+    try {
+      const response = await axios.post(
+        `http://137.184.249.83:80/food/fridge/item`,
+        {
+          ingredient_id: values.ingredientId,
+          quantity: values.quantity,
+          added_date: {
+            seconds: Math.floor(values.addedDate.getTime() / 1000),
+          },
+          expired_date: {
+            seconds: Math.floor(values.expiredDate.getTime() / 1000),
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      console.log('Create Result:', response.data)
+      setOpen(false)
+      onFinish()
+    } catch (error) {
+      console.error('Error creating fridge item:', error)
+    }
   }
 
-  const updateFridgeItem = (values: z.infer<typeof formSchema>) => {
+  const updateFridgeItem = async (values: z.infer<typeof formSchema>) => {
     console.log('Updating fridge item', values)
+    try {
+      if (!data) return new Error('No item to update')
+      const response = await axios.put(
+        `http://137.184.249.83:80/food/fridge/item`,
+        {
+          id: data.id,
+          ingredient_id: values.ingredientId,
+          quantity: values.quantity,
+          added_date: {
+            seconds: Math.floor(values.addedDate.getTime() / 1000),
+          },
+          expired_date: {
+            seconds: Math.floor(values.expiredDate.getTime() / 1000),
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      console.log('Update Result:', response.data)
+      setOpen(false)
+      onFinish()
+    } catch (error) {
+      console.error('Error updating fridge item:', error)
+    }
   }
 
-  const handleRemoveFridgeItem = (id: string) => {
+  const handleRemoveFridgeItem = async (id: string) => {
     console.log('Removing fridge item', id)
-    setOpen(false)
+    try {
+      const response = await axios.delete(
+        `http://137.184.249.83:80/food/fridge/item/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      console.log('Deleted Result:', response.data)
+      setOpen(false)
+      onFinish()
+    } catch (error) {
+      console.error('Error deleting fridge item:', error)
+    }
   }
 
   const handleExpSwitchChange = (checked: boolean) => {

@@ -11,24 +11,14 @@ import { Button } from '@/components/ui/button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
 
-import type { FridgeItem, SortItem } from '@/app/types'
+import type { FridgeItem, SortItem, Ingredient, FridgeRaw } from '@/app/types'
 import FridgeTable from './_components/fridgeTable'
 import FridgeModal from './_components/fridgeModal'
 import { SelectValue } from '@radix-ui/react-select'
+import axios from 'axios'
+import { useSession } from '@clerk/nextjs'
 
 export default function FridgePage() {
-  const categories = [
-    'Baking Supplies',
-    'Beverages',
-    'Dairy',
-    'Fruits',
-    'Grain',
-    'Herbs and Spices',
-    'Meat and Poultry',
-    'Sauce and Condiment',
-    'Seafood',
-    'Vegetables',
-  ]
   const timeToExpire = [
     'Expired',
     'Expires today',
@@ -36,128 +26,53 @@ export default function FridgePage() {
     'Expires within 7 days',
     'All',
   ]
-  const mockFridgeItems = [
-    {
-      id: 'f5d19a8b-4d56-41e4-a292-5e35114bc7a7',
-      name: 'Fresh Milk',
-      quantity: '1 liter',
-      addedDate: new Date('2024-10-25'),
-      expiredDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-      category: 'Dairy',
-    },
-    {
-      id: '8c607256-372e-4c82-93b0-cb727f01b441',
-      name: 'Fresh Milk',
-      quantity: '10 liter',
-      addedDate: new Date('2024-10-26'),
-      expiredDate: new Date('2024-10-30'),
-      category: 'Dairy',
-    },
-    {
-      id: 'ce34f1e1-71ab-418b-bf92-9a6fded8cce4',
-      name: 'Apple',
-      quantity: '1 kilo',
-      addedDate: new Date('2024-10-25'),
-      expiredDate: new Date(Date.now()),
-      category: 'Fruits',
-    },
-    {
-      id: '1ff92d36-7fc5-4c0b-90ad-bd022e9c6d51',
-      name: 'Apple',
-      quantity: '10 kilo',
-      addedDate: new Date('2024-6-25'),
-      expiredDate: new Date(Date.now() + 6 * 60 * 60 * 1000),
-      category: 'Fruits',
-    },
-    {
-      id: 'a29d139b-45b4-4d7a-bb26-c6f9bfe8e658',
-      name: 'Apple',
-      quantity: '100 kilo',
-      addedDate: new Date('2024-10-25'),
-      expiredDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
-      category: 'Fruits',
-    },
-    {
-      id: '6eaa26cd-69c2-48a4-b8de-8cf650d0888d',
-      name: 'Carrot',
-      quantity: '500 grams',
-      addedDate: new Date('2024-10-01'),
-      expiredDate: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000),
-      category: 'Vegetables',
-    },
-    {
-      id: '7d04fe5b-1f8e-4091-b575-e9b29d8e2e6c',
-      name: 'Chicken Breast',
-      quantity: '9 kilo',
-      addedDate: new Date('2024-10-19'),
-      expiredDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000),
-      category: 'Meat and Poultry',
-    },
-    {
-      id: 'f8c2c6f4-b49d-4a5c-8501-d6899d77d4ec',
-      name: 'Chicken Breast',
-      quantity: '5 kilo',
-      addedDate: new Date('2024-10-18'),
-      expiredDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
-      category: 'Meat and Poultry',
-    },
-    {
-      id: 'c7048812-287d-4c2b-b0a1-bdc276b18e75',
-      name: 'Chicken Breast',
-      quantity: '20 kilo',
-      addedDate: new Date('2024-10-11'),
-      expiredDate: new Date('2024-10-30'),
-      category: 'Meat and Poultry',
-    },
-    {
-      id: 'db6b4909-8a80-493d-835d-8d5f840eb601',
-      name: 'Salmon Fillet',
-      quantity: '250 grams',
-      addedDate: new Date('2024-10-10'),
-      expiredDate: new Date('2024-10-27'),
-      category: 'Seafood',
-    },
-    {
-      id: '722b0e8e-0833-44b2-b810-d1f9876d1bbd',
-      name: 'Brown Rice',
-      quantity: '2 kilos',
-      addedDate: new Date('2024-10-01'),
-      expiredDate: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000),
-      category: 'Grain',
-    },
-    {
-      id: 'ec2a15c1-55ca-4f6b-a888-8357d528e2f1',
-      name: 'Ketchup',
-      quantity: '500 ml',
-      addedDate: new Date('2024-01-01'),
-      expiredDate: new Date(Date.now() + 500 * 24 * 60 * 60 * 1000),
-      category: 'Sauce and Condiment',
-    },
-    {
-      id: 'b858e201-e47e-4886-8bba-79555a63b381',
-      name: 'Basil',
-      quantity: '100 grams',
-      addedDate: new Date('2024-10-20'),
-      expiredDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      category: 'Herbs and Spices',
-    },
-    {
-      id: 'bb5a6f7f-8e4d-4c9d-a233-070b2b078d94',
-      name: 'Orange Juice',
-      quantity: '1 liter',
-      addedDate: new Date('2024-10-24'),
-      expiredDate: new Date(Date.now() + 1 * 5 * 60 * 60 * 1000),
-      category: 'Beverages',
-    },
-    {
-      id: '3a08c7d7-d318-44a1-bd13-65f27ffeb417',
-      name: 'Flour',
-      quantity: '5 kilos',
-      addedDate: new Date('2024-01-01'),
-      expiredDate: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000),
-      category: 'Baking Supplies',
-    },
-  ]
+  const [ingredients, setIngredients] = useState<Ingredient[]>([])
+  const [categories, setCategories] = useState<string[]>([])
+  const [fridgeItems, setFridgeItems] = useState<FridgeItem[]>([])
+  const [filteredFridgeItems, setFilteredFridgeItems] = useState<FridgeItem[]>(
+    []
+  )
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [selectedTimeToExpire, setSelectedTimeToExpire] =
+    useState<string>('All')
+  const [sortCriteria, setSortCriteria] = useState<SortItem[]>([
+    { key: 'name', value: 'asc' },
+  ])
+
+  const { isLoaded: isSessionLoaded, session } = useSession()
+  const [token, setToken] = useState<string | null>(null)
+
+  useEffect(() => {
+    async function getIngredients() {
+      try {
+        const response = await axios.get(
+          `http://137.184.249.83:80/food/ingredients`
+        )
+        setIngredients([...response.data.ingredients])
+      } catch (error) {
+        console.error('Error fetching ingredients:', error)
+      }
+    }
+    getIngredients()
+  }, [])
+
+  useEffect(() => {
+    setCategories(Array.from(new Set(ingredients.map((item) => item.category))))
+  }, [ingredients])
+
+  useEffect(() => {
+    if (isSessionLoaded && session) {
+      session
+        .getToken()
+        .then((fetchedToken) => {
+          setToken(fetchedToken)
+          console.log('Fetched token:', fetchedToken)
+        })
+        .catch((error) => {
+          console.error('Error fetching token:', error)
+        })
+    }
+  }, [isSessionLoaded, session])
 
   const calculateExpCat = (expiredDate: Date) => {
     const today = new Date()
@@ -174,58 +89,72 @@ export default function FridgePage() {
     if (daysToExpire <= 7) return 'Expires within 7 days'
     return ''
   }
-  const addExpCat = (items: FridgeItem[]) => {
+  const addExpCat = (items: FridgeRaw[]) => {
+    console.log('items', items)
     return items.map((item) => ({
-      ...item,
-      expCat: calculateExpCat(item.expiredDate),
+      id: item.id,
+      name: ingredients?.find((i) => i.id === item.ingredient_id)?.name,
+      quantity: item.quantity,
+      addedDate: new Date(item.added_date.seconds * 1000),
+      expiredDate: new Date(item.expired_date.seconds * 1000),
+      expCat: calculateExpCat(new Date(item.expired_date.seconds * 1000)),
+      category: ingredients?.find((i) => i.id === item.ingredient_id)?.category,
     }))
   }
-  // data from backend
-  const fridgeItems = addExpCat(mockFridgeItems)
-  const [filteredFridgeItems, setFilteredFridgeItems] =
-    useState<FridgeItem[]>(fridgeItems)
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedTimeToExpire, setSelectedTimeToExpire] =
-    useState<string>('All')
-  const [sortCriteria, setSortCriteria] = useState<SortItem[]>([
-    { key: 'name', value: 'asc' },
-  ])
+
+  const getFridgeItems = async () => {
+    if (!token || !ingredients) return
+    try {
+      const response = await axios.get('http://137.184.249.83:80/food/fridge', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      setFridgeItems(addExpCat(response.data.items || []))
+      console.log('Fetch Result:', response.data)
+    } catch (error) {
+      console.error('Error fetching fridge items:', error)
+    }
+  }
+  useEffect(() => {
+    getFridgeItems()
+  }, [token, ingredients])
 
   useEffect(() => {
-    let newFridgeItems: FridgeItem[] = [...fridgeItems]
-    if (selectedCategories.length != 0) {
-      newFridgeItems = newFridgeItems.filter((item) =>
-        selectedCategories.includes(item.category)
-      )
+    if (fridgeItems.length > 0) {
+      let newFridgeItems: FridgeItem[] = [...fridgeItems]
+      if (selectedCategories.length != 0) {
+        newFridgeItems = newFridgeItems.filter(
+          (item) => item.category && selectedCategories.includes(item.category)
+        )
+      }
+      if (selectedTimeToExpire === 'Expired') {
+        newFridgeItems = newFridgeItems.filter(
+          (item) => item.expCat === 'Expired'
+        )
+      } else if (selectedTimeToExpire === 'Expires today') {
+        newFridgeItems = newFridgeItems.filter(
+          (item) => item.expCat === 'Expires today'
+        )
+      } else if (selectedTimeToExpire === 'Expires within 3 days') {
+        newFridgeItems = newFridgeItems.filter(
+          (item) =>
+            item.expCat &&
+            ['Expires today', 'Expires within 3 days'].includes(item.expCat)
+        )
+      } else if (selectedTimeToExpire === 'Expires within 7 days') {
+        newFridgeItems = newFridgeItems.filter(
+          (item) =>
+            item.expCat &&
+            [
+              'Expires today',
+              'Expires within 3 days',
+              'Expires within 7 days',
+            ].includes(item.expCat)
+        )
+      }
+      newFridgeItems = sortFridgeItems(newFridgeItems)
+      setFilteredFridgeItems(newFridgeItems)
     }
-    if (selectedTimeToExpire === 'Expired') {
-      newFridgeItems = newFridgeItems.filter(
-        (item) => item.expCat === 'Expired'
-      )
-    } else if (selectedTimeToExpire === 'Expires today') {
-      newFridgeItems = newFridgeItems.filter(
-        (item) => item.expCat === 'Expires today'
-      )
-    } else if (selectedTimeToExpire === 'Expires within 3 days') {
-      newFridgeItems = newFridgeItems.filter(
-        (item) =>
-          item.expCat &&
-          ['Expires today', 'Expires within 3 days'].includes(item.expCat)
-      )
-    } else if (selectedTimeToExpire === 'Expires within 7 days') {
-      newFridgeItems = newFridgeItems.filter(
-        (item) =>
-          item.expCat &&
-          [
-            'Expires today',
-            'Expires within 3 days',
-            'Expires within 7 days',
-          ].includes(item.expCat)
-      )
-    }
-    newFridgeItems = sortFridgeItems(newFridgeItems)
-    setFilteredFridgeItems(newFridgeItems)
-  }, [selectedCategories, selectedTimeToExpire])
+  }, [fridgeItems, selectedCategories, selectedTimeToExpire])
 
   useEffect(() => {
     setFilteredFridgeItems(sortFridgeItems(filteredFridgeItems))
@@ -271,6 +200,7 @@ export default function FridgePage() {
     return updatedItems
   }
 
+  if (!ingredients) return null
   return (
     <div className="flex flex-col h1 text-primary-400 items-center lg:px-[150px] md:px-[100px] px-12 gap-3 py-6">
       <div className="flex w-full items-center justify-between text-gray-400">
@@ -308,7 +238,10 @@ export default function FridgePage() {
             </SelectContent>
           </Select>
         </div>
-        <FridgeModal>
+        <FridgeModal
+          ingredients={ingredients}
+          onFinish={() => getFridgeItems()}
+        >
           <Button variant={'outline'}>
             <div className="flex items-center gap-2">
               <FontAwesomeIcon icon={faPlus} size={'1x'} />
@@ -337,6 +270,8 @@ export default function FridgePage() {
         fridgeItems={filteredFridgeItems}
         sortCriteria={sortCriteria}
         handleSortToggle={handleSortToggle}
+        ingredients={ingredients}
+        onFinish={() => getFridgeItems()}
       ></FridgeTable>
     </div>
   )
