@@ -8,7 +8,7 @@ import axios from 'axios'
 
 export default function CustomTab(props: { userId: string }) {
   const [menus, setMenus] = useState<Menu[]>([])
-  const [favoriteMenus, setFavoriteMenus] = useState<Menu[]>([])
+  const [favoriteMenus] = useState<Menu[]>([])
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {

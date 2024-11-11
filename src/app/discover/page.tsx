@@ -9,22 +9,24 @@ import {
 } from '@/components/ui/select'
 import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
-import type { Ingredient, Menu } from '../types'
+import type { Menu } from '../types'
 import _ from 'lodash'
 
 import { Input } from '@/components/ui/input'
-import { useUser } from '@clerk/nextjs'
+import { useSession, useUser } from '@clerk/nextjs'
 
 export default function DiscovePage() {
   const { isLoaded: isUserLoaded, user } = useUser()
   useEffect(() => {
     if (!user) return
+    console.log('user:', user)
   }, [user])
 
   //fetch favorite menu
 
   //mock props
   const [menus, setMenus] = useState<Menu[]>([])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [favoriteMenus, setFavoriteMenus] = useState<Menu[]>([])
   const [filterByCategory, setFilterByCategory] = useState<string>('all')
   const [filterByFridge, setFilterByFridge] = useState<string>('all')
@@ -34,22 +36,25 @@ export default function DiscovePage() {
   const [searchMenus, setSearchMenus] = useState<Menu[]>([])
   const [filterCategoryMenus, setFilterCategoryMenus] = useState<Menu[]>([])
   const [filterFridgeMenus, setFilterFridgeMenus] = useState<Menu[]>([])
+  const { session } = useSession()
 
   //fetch favorite menu
   useEffect(() => {
-    if (user) {
+    if (!session || !user) return
+    session.getToken().then((token) => {
+      // fetch favorite menu
       axios
         .get('http://137.184.249.83:80/user', {
           headers: {
-            Authorization: `Bearer ${user.publicMetadata.accessToken}`,
+            Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
           const favoriteMenus: Menu[] = response.data.favorite_menus
           setFavoriteMenus(favoriteMenus)
         })
-    }
-  }, [user])
+    })
+  }, [user, session])
 
   useEffect(() => {
     setLoading(true)
@@ -85,30 +90,49 @@ export default function DiscovePage() {
   useEffect(() => {
     if (filterByFridge !== 'all') {
       setLoading(true)
-      const fridgeItems = axios
-        // .get('http://137.184.249.83:80/food/fridge')
-        .get('http://137.184.249.83:80/food/ingredients')
-        .then((response) => {
-          const fridgeData: Ingredient[] = response.data.ingredients
-          const filterByFridge = fridgeData.map((item) => {
-            return item.name
+
+      if (!session) return
+      session.getToken().then((token) => {
+        const fridgeItems = axios
+          .get('http://137.184.249.83:80/food/fridge', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           })
-          return filterByFridge
+          .then((response) => {
+            const fridgeData = response.data.items
+            console.log('fridgeData:', fridgeData)
+            const filterByFridge = fridgeData.map((item) => {
+              return item.ingredient_id
+            })
+            return filterByFridge
+          })
+        fridgeItems.then((items) => {
+          const ingredient_requests = items.map((item) =>
+            axios.get(`http://137.184.249.83:80/food/ingredient/${item}`)
+          )
+          const ingredientData = Promise.all(ingredient_requests).then(
+            (responses) => {
+              return responses.flatMap((response) => response.data)
+            }
+          )
+          const requests = ingredientData.then((response) => response.map((item) => 
+            axios.get(`http://137.184.249.83:80/food/menu/search?query=${item.ingredient.name}`)
+          ))
+
+          requests.then((reqs) => Promise.all(reqs)).then((responses) => {
+            const menusData = responses.flatMap(
+              (response) => response.data.menus
+            )
+            setFilterFridgeMenus(menusData)
+          })
         })
-      fridgeItems.then((items) => {
-        const requests = items.map((item) =>
-          axios.get(`http://137.184.249.83:80/food/menu/search?query=${item}`)
-        )
-        Promise.all(requests).then((responses) => {
-          const menusData = responses.flatMap((response) => response.data.menus)
-          setFilterFridgeMenus(menusData)
-        })
+        setLoading(false)
       })
-      setLoading(false)
     } else {
       setFilterFridgeMenus(menus)
     }
-  }, [filterByFridge, menus])
+  }, [filterByFridge, menus, session])
 
   const debouncedSearch = useCallback(
     _.debounce(async (term) => {
@@ -133,7 +157,7 @@ export default function DiscovePage() {
 
   useEffect(() => {
     debouncedSearch(searchTerm)
-  }, [searchTerm, debouncedSearch, menus])
+  }, [searchTerm, debouncedSearch])
 
   useEffect(() => {
     setLoading(true)
