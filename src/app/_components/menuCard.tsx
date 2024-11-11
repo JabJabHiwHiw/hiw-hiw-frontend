@@ -17,7 +17,6 @@ import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import { useSession } from '@clerk/nextjs'
 import { handleFavorite } from '../api/auth/auth'
-import { RefObject } from 'react'
 
 interface MenuCardProps extends MenuDetail {
   onFavoriteClick: () => void
@@ -40,12 +39,12 @@ export default function MenuCard(props: MenuCardProps) {
   const handleCreateMenu = () => {
     router.push('/menu/create')
   }
-  const { isLoaded: isSessionLoded, session } = useSession()
+  const { session } = useSession()
 
   const handleFavoriteClick = async () => {
     if (session) {
       const token = await session.getToken()
-      const rsp = await handleFavorite(id, isFavorite, token ?? '')
+      await handleFavorite(id, isFavorite, token ?? '')
       // console.log('session:', token)
     }
     onFavoriteClick()

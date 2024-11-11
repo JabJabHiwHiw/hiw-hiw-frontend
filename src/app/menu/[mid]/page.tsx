@@ -90,7 +90,7 @@ export default function MenuDetailPage({
   const handleFavoriteClick = async () => {
     if (session) {
       const token = await session.getToken()
-      const rsp = await handleFavorite(mockMenuItem.id, isFavorite, token ?? '')
+      await handleFavorite(mockMenuItem.id, isFavorite, token ?? '')
       fetchFavoriteMenus()
     }
   }
