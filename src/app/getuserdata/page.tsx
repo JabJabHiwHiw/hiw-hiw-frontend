@@ -1,7 +1,6 @@
 'use client'
 import { useUser, useSession } from '@clerk/nextjs'
 import { useEffect } from 'react'
-import { registerAuthApi } from '../api/auth/auth'
 import { useRouter } from 'next/dist/client/components/navigation'
 
 export default function Test() {
