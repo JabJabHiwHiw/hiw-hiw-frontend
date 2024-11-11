@@ -93,9 +93,9 @@ export default function UploadImage() {
             <FontAwesomeIcon icon={faPlus} className="text-gray-100 h-[80px]" />
           </div>
           <UploadButton
-            className="mt-2 ut-button:bg-primary-300 ut-button:h6 ut-button:hover:bg-primary-400 
-                ut-button:text-black ut-button:ut-readying:bg-primary-300 text-black
-                ut-button:focus:outline-none"
+            className="mt-2 ut-button:bg-primary-200 ut-button:text-black
+                ut-button:ut-ready:bg-primary-300 ut-button:ut-ready:hover:bg-primary-400
+                ut-button:ut-uploading:bg-primary-300"
             endpoint="imageUploader"
             onClientUploadComplete={(res: UploadResponse[]) => {
               // Update the image URL state when the upload completes

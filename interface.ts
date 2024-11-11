@@ -1,42 +1,31 @@
-import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb';
 
 //menu interface-----------------------------------
-export interface MenuIngredient {
-    id: string;
-    name: string;
-    required_quantity: string;
-    ingredient_id: string;
+interface Ingredient {
+  name: string;
+  required_quantity: string;
+  ingredient_id: string;
 }
 
-export interface CookingStep {
-    step_no: number;
-    step: string; 
+interface Step {
+  step_no: number;
+  step: string;
 }
 
-export interface MenuItem {
-    id: string;
-    name: string;
-    description: string;
-    ingredients: MenuIngredient[];
-    steps: CookingStep[];
-    category: string;
-    servings: number;
-    created_by: string;
-    image_url: string;
+interface MenuItem {
+  id: string;
+  name: string;
+  description: string;
+  ingredients: Ingredient[];
+  category: string;
+  servings: number;
+  created_by: string;
+  image_url:string;
+  steps: Step[];
 }
 
-//fridge interface--------------------------------------------------------
-export interface FridgeItem {
-    id: string;                      
-    user_id: string;                
-    ingredient_id: string;          
-    quantity: string;               
-    added_date: Timestamp;          
-    expired_date: Timestamp;        
+interface Menu {
+  item: MenuItem;
 }
 
-// FridgeItemsResponse interface representing the response for fridge items
-export interface FridgeItemsResponse {
-    items: FridgeItem[];            
-    error: string;                  
-}
+
+//---------------------------------------------------------

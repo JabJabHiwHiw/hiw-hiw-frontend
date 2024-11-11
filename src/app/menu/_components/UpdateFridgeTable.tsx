@@ -3,18 +3,22 @@ import React, { useState } from 'react';
 import TableRow from '@/components/ui/tableRow';
 
 
-export default function UpdateFridgeTable() {
+export default function UpdateFridgeTable({ingredients}:{ingredients:Ingredient[]}) {
   // Initial data for the table
-  const initialData = [
-    { id: 4, ingredient: 'Parmesan cheese', amount: '1 cups', usedAmount: '1 cups', remainingAmount: '' },
-    { id: 5, ingredient: 'Fresh basil', amount: '1/2 cup', usedAmount: '1/2 cup', remainingAmount: '' },
-  ];
+  const initialData = ingredients.map((item) => ({
+    id: item.ingredient_id,
+    ingredient: item.name,
+    amount: item.required_quantity,
+    usedAmount: item.required_quantity,
+    remainingAmount: '',
+  }));
+
   const [tableData, setTableData] = useState(initialData);
 
-  const handleInputChange = (ingredient: string, value: string) => {
+  const handleInputChange = (ingredientName: string, value: string) => {
     setTableData((prevData) =>
       prevData.map((row) =>
-        row.ingredient === ingredient ? { ...row, remainingAmount: value } : row
+        row.ingredient === ingredientName ? { ...row, remainingAmount: value } : row
       )
     );
   };
