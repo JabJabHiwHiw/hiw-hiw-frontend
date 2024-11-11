@@ -1,4 +1,4 @@
-import { Input } from '@/components/ui/input'
+'use client'
 import MenuCard from '../_components/menuCard'
 import {
   Select,
@@ -7,71 +7,173 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useCallback, useEffect, useState } from 'react'
+import axios from 'axios'
+import type { Ingredient, Menu } from '../types'
+import _ from 'lodash'
+
+import { Input } from '@/components/ui/input'
+import { useUser } from '@clerk/nextjs'
 
 export default function DiscovePage() {
-  //mock prop
-  const prop = [
-    {
-      id: '1',
-      name: 'Menu Name',
-      description:
-        'Menu Description ja Menu Description ja Menu Description ja Menu Description ja',
-      imageUrl: 'https://www.gstatic.com/webp/gallery/1.jpg',
-      isFavorite: false,
-      isOwner: true,
-    },
-    {
-      id: '2',
-      name: 'Menu Name 2',
-      description:
-        'Menu Description ja Menu Description ja Menu Description ja Menu Description ja',
-      imageUrl: 'https://www.gstatic.com/webp/gallery/1.jpg',
-      isFavorite: true,
-      isOwner: false,
-    },
-    {
-      id: '3',
-      name: 'Menu Name 3',
-      description:
-        'Menu Description ja Menu Description ja Menu Description ja Menu Description ja',
-      imageUrl: 'https://www.gstatic.com/webp/gallery/1.jpg',
-      isFavorite: false,
-      isOwner: false,
-    },
-  ]
-  const categories = [
-    'Japanese',
-    'Chinese',
-    'Korean',
-    'Western',
-    'Thai',
-    'Vietnamese',
-    'Indian',
-    'Italian',
-    'French',
-    'Spanish',
-    'Mexican',
-    'Brazilian',
-    'Turkish',
-    'Middle Eastern',
-    'African',
-    'American',
-    'Other',
-  ]
+  const { isLoaded: isUserLoaded, user } = useUser()
+  useEffect(() => {
+    if (!user) return
+  }, [user])
+
+  //fetch favorite menu
+
+  //mock props
+  const [menus, setMenus] = useState<Menu[]>([])
+  const [favoriteMenus, setFavoriteMenus] = useState<Menu[]>([])
+  const [filterByCategory, setFilterByCategory] = useState<string>('all')
+  const [filterByFridge, setFilterByFridge] = useState<string>('all')
+  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [viewMenus, setViewMenus] = useState<Menu[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
+  const [searchMenus, setSearchMenus] = useState<Menu[]>([])
+  const [filterCategoryMenus, setFilterCategoryMenus] = useState<Menu[]>([])
+  const [filterFridgeMenus, setFilterFridgeMenus] = useState<Menu[]>([])
+
+  //fetch favorite menu
+  useEffect(() => {
+    if (user) {
+      axios
+        .get('http://137.184.249.83:80/user', {
+          headers: {
+            Authorization: `Bearer ${user.publicMetadata.accessToken}`,
+          },
+        })
+        .then((response) => {
+          const favoriteMenus: Menu[] = response.data.favorite_menus
+          setFavoriteMenus(favoriteMenus)
+        })
+    }
+  }, [user])
+
+  useEffect(() => {
+    setLoading(true)
+    axios
+      .get('http://137.184.249.83/food/menus')
+      .then((response) => {
+        const menusData: Menu[] = response.data.menus
+        setMenus(menusData)
+        setViewMenus(menusData)
+      })
+      .catch((error) => {
+        console.error('Error fetching menus:', error)
+      })
+    setLoading(false)
+  }, [])
+
+  useEffect(() => {
+    if (filterByCategory !== 'all') {
+      setLoading(true)
+      axios
+        .get(
+          `http://137.184.249.83:80/food/menu/search?query=${filterByCategory}`
+        )
+        .then((response) => {
+          const menusData: Menu[] = response.data.menus
+          setFilterCategoryMenus(menusData)
+        })
+    } else {
+      setFilterCategoryMenus(menus)
+    }
+  }, [filterByCategory, menus])
+
+  useEffect(() => {
+    if (filterByFridge !== 'all') {
+      setLoading(true)
+      const fridgeItems = axios
+        // .get('http://137.184.249.83:80/food/fridge')
+        .get('http://137.184.249.83:80/food/ingredients')
+        .then((response) => {
+          const fridgeData: Ingredient[] = response.data.ingredients
+          const filterByFridge = fridgeData.map((item) => {
+            return item.name
+          })
+          return filterByFridge
+        })
+      fridgeItems.then((items) => {
+        const requests = items.map((item) =>
+          axios.get(`http://137.184.249.83:80/food/menu/search?query=${item}`)
+        )
+        Promise.all(requests).then((responses) => {
+          const menusData = responses.flatMap((response) => response.data.menus)
+          setFilterFridgeMenus(menusData)
+        })
+      })
+      setLoading(false)
+    } else {
+      setFilterFridgeMenus(menus)
+    }
+  }, [filterByFridge, menus])
+
+  const debouncedSearch = useCallback(
+    _.debounce(async (term) => {
+      if (term) {
+        try {
+          setLoading(true)
+          const response = await axios.get(
+            `http://137.184.249.83:80/food/menu/search?query=${term}`
+          )
+          setSearchMenus(response.data.menus)
+          setLoading(false)
+        } catch (error) {
+          console.error('Search error:', error)
+          setLoading(false)
+        }
+      } else {
+        setSearchMenus(menus)
+      }
+    }, 500),
+    [menus]
+  )
+
+  useEffect(() => {
+    debouncedSearch(searchTerm)
+  }, [searchTerm, debouncedSearch, menus])
+
+  useEffect(() => {
+    setLoading(true)
+    const intersection = _.intersectionWith(
+      filterCategoryMenus,
+      searchMenus,
+      filterFridgeMenus,
+      _.isEqual
+    )
+    setViewMenus(intersection)
+    setLoading(false)
+  }, [filterCategoryMenus, searchMenus, filterFridgeMenus])
+  console.log('viewmenus', viewMenus)
+
+  const categories: string[] = _.uniq(menus.map((menu) => menu.category))
   return (
-    <div className="flex flex-col h1 text-primary-400 items-center px-[100px] gap-3 py-6">
+    <div className="flex flex-col h1 text-primary-400 items-center md:px-[200px] px-[100px] gap-3 py-6">
       <div className="flex w-full md:justify-between gap-4 text-gray-400">
         <Input
           type="text"
           placeholder="Search by Menu Name, Ingredient"
           className="w-full min-w-[150px] md:w-[465px]"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value)
+            setSearchMenus(searchMenus)
+          }}
         />
         <div className="flex gap-3 ">
-          <Select>
+          <Select
+            defaultValue="all"
+            onValueChange={(e) => {
+              setFilterByCategory(e)
+            }}
+          >
             <SelectTrigger className="lg:w-[180px] w-[100px]">
               <SelectValue placeholder="Select Category" />
             </SelectTrigger>
             <SelectContent className="lg:w-[180px] w-[100px]">
+              <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
                 <SelectItem key={category} value={category}>
                   {category}
@@ -79,7 +181,12 @@ export default function DiscovePage() {
               ))}
             </SelectContent>
           </Select>
-          <Select defaultValue="all">
+          <Select
+            defaultValue="all"
+            onValueChange={(e) => {
+              setFilterByFridge(e)
+            }}
+          >
             <SelectTrigger className="lg:w-[180px] w-[100px]">
               <SelectValue />
             </SelectTrigger>
@@ -90,18 +197,27 @@ export default function DiscovePage() {
           </Select>
         </div>
       </div>
-      <div className="grid lg:grid-cols-2 gap-6">
-        {prop.map((menu) => (
-          <MenuCard
-            key={menu.id}
-            description={menu.description}
-            id={menu.id}
-            imageUrl={menu.imageUrl}
-            isFavorite={menu.isFavorite}
-            isOwner={menu.isOwner}
-            name={menu.name}
-          />
-        ))}
+      <div className="flex flex-wrap justify-center gap-6">
+        {isUserLoaded &&
+          user &&
+          !loading &&
+          viewMenus &&
+          viewMenus.map((menu) => (
+            <MenuCard
+              key={menu.id}
+              description={menu.description}
+              id={menu.id}
+              imageUrl={
+                menu.imageUrl
+                  ? menu.imageUrl
+                  : 'https://www.gstatic.com/webp/gallery/1.jpg'
+              }
+              // isFavorite={menu.id in favoriteMenus? true : false}
+              isFavorite={false}
+              isOwner={menu.created_by === user.id}
+              name={menu.name}
+            />
+          ))}
       </div>
     </div>
   )
