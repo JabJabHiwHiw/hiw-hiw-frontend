@@ -20,7 +20,7 @@ export default function CustomTab(props: { userId: string }) {
     setLoading(true)
     try {
       const response = await axios.get(
-        'http://localhost:8080/user/favorite-menus',
+        'http://137.184.249.83:80/user/favorite-menus',
         {
           headers: {
             Authorization: `Bearer ${token}`,
