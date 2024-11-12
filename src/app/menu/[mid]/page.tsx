@@ -12,6 +12,9 @@ import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons'
 import { useState } from 'react'
 import getMenu from '@/lib/getMenu'
 import { useEffect } from 'react'
+import { useSession } from '@clerk/nextjs'
+import axios from 'axios'
+import { handleFavorite } from '@/app/api/auth/auth'
 
 export default function MenuDetailPage({
   params,
@@ -21,6 +24,44 @@ export default function MenuDetailPage({
   const mid = params.mid
   console.log('mid = ' + mid)
   const [menuResponse, setMenuResponse] = useState<Menu | null>(null)
+  const [isFavorite, setIsFavorite] = useState(false)
+  const { session } = useSession()
+
+  const fetchFavoriteMenus = async () => {
+    if (!session) return
+    const token = await session.getToken()
+    if (!token) return
+
+    try {
+      const response = await axios.get(
+        'http://137.184.249.83:80/user/favorite-menus',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      const favoriteMenus: string[] = response.data.favorite_menus
+      console.log(favoriteMenus)
+      setIsFavorite(favoriteMenus.includes(mid))
+    } catch (error) {
+      console.error('Error fetching favorite menus:', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchFavoriteMenus()
+  }, [session])
+
+  const handleFavoriteClick = async () => {
+    if (session) {
+      const token = await session.getToken()
+      await handleFavorite(mid, isFavorite, token ?? '')
+      // console.log('session:', token)
+    }
+    fetchFavoriteMenus()
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       const menu = await getMenu(mid)
@@ -32,17 +73,13 @@ export default function MenuDetailPage({
 
   const default_image =
     'https://utfs.io/f/Rik3NdCrElaD7sKaSFBM2XYUtdbmOQz1iZwSvlJMNngGoR6E'
-  const [isFavorite, setIsFavorite] = useState(false)
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite)
-  }
   if (!menuResponse) return <p>Menu is loading ...</p>
   return (
     <div className="flex flex-col items-left p-16 space-y-12">
       <div className="flex justify-between items-center">
         <h1 className="h1 font-bold">{menuResponse.item.name}</h1>
 
-        <button type="button" className="w-fit" onClick={toggleFavorite}>
+        <button type="button" className="w-fit" onClick={handleFavoriteClick}>
           <FontAwesomeIcon
             icon={isFavorite ? faHeart : faHeartRegular}
             size={'2x'}
