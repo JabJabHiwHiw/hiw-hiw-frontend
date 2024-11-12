@@ -98,7 +98,7 @@ export default function CustomTab(props: { userId: string }) {
                   imageUrl={
                     menu.image_url
                       ? menu.image_url
-                      : 'https://www.gstatic.com/webp/gallery/1.jpg'
+                      : 'https://utfs.io/f/Rik3NdCrElaD7sKaSFBM2XYUtdbmOQz1iZwSvlJMNngGoR6E'
                   }
                   isFavorite={true}
                   isOwner={false}
