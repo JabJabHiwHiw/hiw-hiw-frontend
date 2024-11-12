@@ -10,12 +10,14 @@ import {
 
 export default function SelectCategory({
   setCategory,
+  value
 }: {
   setCategory: (value: string) => void
+  value?: string
 }) {
   return (
     <div>
-      <Select onValueChange={(value) => setCategory(value)}>
+      <Select onValueChange={(value) => setCategory(value)} value={value}>
         <SelectTrigger className="w-[200px] border-4 border-gray-90 rounded-full focus:border-gray-100">
           <SelectValue placeholder="Select Category" />
         </SelectTrigger>

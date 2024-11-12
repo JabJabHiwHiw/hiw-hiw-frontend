@@ -36,9 +36,6 @@ export default function MenuCard(props: MenuCardProps) {
   const handleCardClick = () => {
     router.push(`/menu/${id}`)
   }
-  const handleCreateMenu = () => {
-    router.push('/menu/create')
-  }
   const { session } = useSession()
 
   const handleFavoriteClick = async () => {
@@ -68,7 +65,7 @@ export default function MenuCard(props: MenuCardProps) {
             className="w-fit"
             onClick={(e) => {
               e.stopPropagation()
-              handleCreateMenu()
+              router.push(`/menu/${id}/edit`)
             }}
           >
             <FontAwesomeIcon
