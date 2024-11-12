@@ -5,6 +5,7 @@ import getMenu from "@/lib/getMenu";
 import { useSession } from "@clerk/nextjs";
 import axios from "axios";
 import SuccessPopOver from './SuccessPopOver';
+import { Button } from '@/components/ui/button';
 
 
 export default function UpdateFridgeTable({mid}:{mid:string}) {
@@ -66,6 +67,7 @@ export default function UpdateFridgeTable({mid}:{mid:string}) {
             remaining_amount: "",
             added_date: fridgeItem?.added_date || { seconds: 0 },
             expired_date: fridgeItem?.expired_date || { seconds: 0 },
+            deleteMode: false,
           } as FridgeItemToUpdate;
         });
       setTableData(updatedData);
@@ -79,22 +81,33 @@ export default function UpdateFridgeTable({mid}:{mid:string}) {
       )
     );
   };
+  const handleToggleDeleteMode = (ingredientId: string) => {
+      setTableData((prevData) =>
+          prevData.map((row) =>
+              row.ingredient_id === ingredientId ? { ...row, deleteMode: !row.deleteMode } : row
+          )
+      );
+  };
+
   const handleUpdate = async () => {
-    // Check if any row has an empty remainingAmount
-    const incompleteEntries = tableData.some((row) => row.remaining_amount.trim() === '');
+    const incompleteEntries = tableData.some((row) => !row.deleteMode && row.remaining_amount.trim() === '');
 
     if (incompleteEntries) {
-      setErrorMessage('Please fill in the remaining amount for all ingredients before updating.');
-      return;
+        setErrorMessage('Please fill in the remaining amount for all ingredients before updating.');
+        return;
     }
 
-    setErrorMessage(''); // Clear any previous error message
+    setErrorMessage('');
 
     // Send PUT request for each ingredient
     try {
       if (token) {
         const requests = tableData.map((row) =>
-          axios.put(
+          row.deleteMode
+                        ? axios.delete(`http://137.184.249.83/food/fridge/item/${row.id}`, {
+                            headers: { Authorization: `Bearer ${token}` },
+                        })
+          :axios.put(
             `http://137.184.249.83/food/fridge/item/`,
             {
               id:row.id,
@@ -132,6 +145,7 @@ export default function UpdateFridgeTable({mid}:{mid:string}) {
             <th className="py-2 px-4 text-left h4 font-bold">Ingredient</th>
             <th className="py-2 px-4 text-left h4 font-bold">In Fridge Amount</th>
             <th className="py-2 px-4 text-left h4 font-bold">Remaining Amount</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -149,7 +163,16 @@ export default function UpdateFridgeTable({mid}:{mid:string}) {
                     onChange={(e) => handleInputChange(row.name, e.target.value)} 
                     className=" w-full border border-primary-300 rounded-full p-1 pl-4 focus:outline-none focus:border-primary-300 focus:bg-primary-100"
                     placeholder="Enter amount"
-                />
+                    disabled={row.deleteMode}
+                />,
+                <Button
+                    variant={row.deleteMode ? "outline" : "discard"}
+                    key={row.ingredient_id}
+                    onClick={() => handleToggleDeleteMode(row.ingredient_id)}
+                    className='w-full'
+                >
+                    {row.deleteMode ? "Edit" : "Delete"}
+                </Button>
               ]}
             />
           ))}
