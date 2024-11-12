@@ -1,10 +1,10 @@
 'use client'
 
-import IngredientsTable from "../_components/IngredientTable"
-import NumberOfServing from "../_components/NumberOfServing"
+import IngredientsTable from '../_components/IngredientTable'
+import NumberOfServing from '../_components/NumberOfServing'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart } from '@fortawesome/free-solid-svg-icons'
@@ -91,17 +91,35 @@ export default function MenuDetailPage({params}: {params:{mid:string}}){
                 }
             </div>
 
-            <div className='flex flex-col space-y-4 pt-8'>
-                <Link href={`/menu/${mid}/cook`} passHref className='w-full'>
-                    <Button variant="yellow" className='w-full'>Cook from my fridge</Button>
-                </Link>
+      <div className="flex flex-col space-y-6">
+        <h2 className="h3 font-bold">Ingredients</h2>
+        <NumberOfServing variant="default" initialServings={5} />
+        <IngredientsTable />
+      </div>
 
-                <Link href={`/discover`} passHref className='w-full'>
-                    <Button variant="secondary" className='w-full'>Back</Button>
-                </Link>
-            </div>
+      <div className="flex flex-col space-y-6">
+        <h2 className="h3 font-bold">Recipe</h2>
+        {mockMenuItem.steps.map((step) => (
+          <div key={step.step_no}>
+            <h4 className="h4 font-bold">Step {step.step_no}</h4>
+            <h4 className="h4">{step.step}</h4>
+          </div>
+        ))}
+      </div>
 
-        </div>
+      <div className="flex flex-col space-y-4 pt-8">
+        <Link href={`/menu/${mid}/cook`} passHref className="w-full">
+          <Button variant="yellow" className="w-full">
+            Cook from my fridge
+          </Button>
+        </Link>
 
-    )
+        <Link href={`/discover`} passHref className="w-full">
+          <Button variant="secondary" className="w-full">
+            Back
+          </Button>
+        </Link>
+      </div>
+    </div>
+  )
 }
