@@ -6,7 +6,7 @@ export type Menu = {
   category: string
   servings: number
   created_by: string
-  imageUrl: string
+  image_url: string
   steps: Step[]
 }
 export type Step = {

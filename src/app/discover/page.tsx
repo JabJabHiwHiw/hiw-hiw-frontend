@@ -255,9 +255,9 @@ export default function DiscovePage() {
               description={menu.description}
               id={menu.id}
               imageUrl={
-                menu.imageUrl
-                  ? menu.imageUrl
-                  : 'https://www.gstatic.com/webp/gallery/1.jpg'
+                menu.image_url
+                  ? menu.image_url
+                  : 'https://utfs.io/f/Rik3NdCrElaD7sKaSFBM2XYUtdbmOQz1iZwSvlJMNngGoR6E'
               }
               isFavorite={favoriteMenusId.includes(menu.id)}
               isOwner={menu.created_by === user.id}

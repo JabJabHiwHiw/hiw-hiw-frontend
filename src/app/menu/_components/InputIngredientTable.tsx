@@ -1,35 +1,62 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { Button } from "@/components/ui/button"
-import { IngredientComboBox } from "./IngredientComboBox"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { IngredientComboBox } from './IngredientComboBox'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import type { Ingredient, RequireIngredient } from '@/app/types'
+import { useSession } from '@clerk/nextjs'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
-interface Ingredient {
-  name: string
-  amount: string
-}
 
-export function InputIngredientTable() {
-  const [ingredients, setIngredients] = React.useState<Ingredient[]>([
-    { name: "", amount: "" },
-  ])
+export function InputIngredientTable(props: {
+  setRequiredIngredients: (ingredients: RequireIngredient[]) => void
+}) {
+  const [reqIngredients, setReqIngredients] = React.useState<
+    RequireIngredient[]
+  >([])
+  const [ingredients, setIngredients] = useState<Ingredient[]>([])
+  const { session } = useSession()
+  useEffect(() => {
+    if (!session) return
+    session.getToken().then((token) => {
+      axios
+        .get('http://137.184.249.83:80/food/ingredients', {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          const ingredients = response.data.ingredients
+          setIngredients(ingredients)
+        })
+    })
+  }, [session])
 
   const addIngredientRow = () => {
-    setIngredients([...ingredients, { name: "", amount: "" }])
+    setReqIngredients([
+      ...reqIngredients,
+      { name: '', required_quantity: '', ingredient_id: '' },
+    ])
   }
 
+  React.useEffect(() => {
+    if (reqIngredients.length === 0) return
+    props.setRequiredIngredients(reqIngredients)
+  }, [reqIngredients, props])
+
   const handleIngredientChange = (index: number, value: string) => {
-    const updatedIngredients = [...ingredients]
-    updatedIngredients[index].name = value
-    setIngredients(updatedIngredients)
+    const updatedIngredients = [...reqIngredients]
+    updatedIngredients[index].ingredient_id = value
+    updatedIngredients[index].name =
+      ingredients.find((ing) => ing.id === value)?.name || ''
+    setReqIngredients(updatedIngredients)
   }
 
   const handleAmountChange = (index: number, value: string) => {
-    const updatedIngredients = [...ingredients]
-    updatedIngredients[index].amount = value
-    setIngredients(updatedIngredients)
+    const updatedIngredients = [...reqIngredients]
+    updatedIngredients[index].required_quantity = value
+    setReqIngredients(updatedIngredients)
   }
 
   return (
@@ -42,29 +69,35 @@ export function InputIngredientTable() {
           </tr>
         </thead>
         <tbody>
-          {ingredients.map((ingredient, index) => (
+          {reqIngredients.map((ingredient, index) => (
             <tr key={index}>
               <td className="p-2 w-1/2">
                 <IngredientComboBox
-                  value={ingredient.name}
+                  value={ingredient.ingredient_id}
                   onChange={(value) => handleIngredientChange(index, value)}
+                  ingredients={ingredients}
                 />
               </td>
               <td className="p-2 w-1/2">
                 <input
-                    type="text"
-                    value={ingredient.amount}
-                    onChange={(e) => handleAmountChange(index, e.target.value)} 
-                    className=" w-full border border-primary-300 rounded-full p-1 pl-4 focus:outline-none focus:border-primary-300 focus:bg-primary-100"
-                    placeholder="Enter amount"
+                  type="text"
+                  value={ingredient.required_quantity}
+                  onChange={(e) => handleAmountChange(index, e.target.value)}
+                  className=" w-full border border-primary-300 rounded-full p-1 pl-4 focus:outline-none focus:border-primary-300 focus:bg-primary-100"
+                  placeholder="Enter amount"
                 />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <Button variant="yellow" onClick={addIngredientRow} className='rounded-t-none'>
-        <FontAwesomeIcon icon={faPlus} className="w-3 h-3 pr-2" /> Add Ingredient
+      <Button
+        variant="yellow"
+        onClick={addIngredientRow}
+        className="rounded-t-none"
+      >
+        <FontAwesomeIcon icon={faPlus} className="w-3 h-3 pr-2" /> Add
+        Ingredient
       </Button>
     </div>
   )
