@@ -15,16 +15,24 @@ import {
 } from "@/components/ui/popover";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import type { Notification } from "../types";
 import { useSession, useUser } from "@clerk/nextjs";
 
+interface Notification {
+	id: string;
+	body: string;
+	item_id: string;
+	user_id: string;
+	title: string;
+	created_at: string;
+	expired_date: string;
+	read: boolean;
+}
 export default function Navbar() {
 	const pathName = usePathname();
 	const isFridge = pathName.startsWith("/fridge");
 	const isDiscover = pathName.startsWith("/discover");
 	const isProfile = pathName.startsWith("/profile");
-	const [notification] = useState<Notification[]>([]);
-	//query user data
+	const [notification, setNotification] = useState<Notification[]>([]);
 	const { isLoaded: isUserLoaded, user } = useUser();
 	const { session } = useSession();
 
@@ -32,20 +40,18 @@ export default function Navbar() {
 		if (!session) return;
 		session.getToken().then((token) => {
 			axios
-				.get("http://137.184.249.83/food/fridge/expiring", {
+				.get("http://137.184.249.83/notifications", {
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},
 				})
 				.then((response) => {
-					console.log("response:", response);
-					const notificationData: Notification[] = response.data;
-					console.log("noti:", notificationData);
-					// setNotification(notificationData)
+					const notificationData = response.data;
+					setNotification(notificationData);
+					console.log(notificationData);
 				});
 		});
 	}, [session]);
-	// console.log('noti:', notification)
 
 	return (
 		<div className="h4 h-20 w-full bg-primary-300 justify-between items-center flex px-8 py-3">
@@ -81,9 +87,9 @@ export default function Navbar() {
 						sideOffset={-32}
 						className={cn("w-fit lg:w-[440px]")}
 					>
-						{notification.length !== 0 ? (
+						{notification && notification.length !== 0 ? (
 							notification.map((item) => (
-								<NotificationItem key={item.id} {...item} />
+								<NotificationItem key={item.id} id={item.id} body={item.body} expireDate={item.expired_date} read={item.read} />
 							))
 						) : (
 							<div className="flex items-center justify-center w-[200px] lg:w-full h-[100px] text-gray-200">
