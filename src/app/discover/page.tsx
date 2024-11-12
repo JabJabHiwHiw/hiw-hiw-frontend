@@ -12,7 +12,7 @@ export default function DiscovePage() {
   //mock prop
   const prop = [
     {
-      id: "5f698144-1952-4ba1-b721-8fbbdce6011f",
+      id: "3392a6d4-c5a8-438a-ac8b-899ab1924300",
       name: 'Menu Name',
       description:
         'Menu Description ja Menu Description ja Menu Description ja Menu Description ja',
