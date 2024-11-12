@@ -5,8 +5,7 @@ export async function registerAuthApi(
   profile_picture: string
 ) {
   try {
-    // const endpoint = 'http://137.184.249.83'
-    const endpoint = 'http://localhost:8080'
+    const endpoint = 'http://137.184.249.83'
     const body = {
       email: email,
       name: name,
@@ -40,7 +39,7 @@ export async function handleFavorite(
   isFavorite: boolean,
   sessionToken: string
 ): Promise<boolean> {
-  const endpoint = 'http://localhost:8080'
+  const endpoint = 'http://137.184.249.83:80'
   const url = `${endpoint}/user/favorite-menus/${menuId}`
 
   const headers = {

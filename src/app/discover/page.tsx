@@ -50,7 +50,7 @@ export default function DiscovePage() {
     setLoading(true)
     try {
       axios
-        .get('http://localhost:8080/user/favorite-menus', {
+        .get('http://137.184.249.83:80/user/favorite-menus', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
