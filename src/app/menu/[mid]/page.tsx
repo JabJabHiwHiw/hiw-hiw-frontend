@@ -76,7 +76,11 @@ export default function MenuDetailPage({params}: {params:{mid:string}}){
             <div className='flex flex-col space-y-6'>
                 <h2 className="h3 font-bold">Ingredients</h2>
                 <NumberOfServing variant="default" initialServings={menuResponse.item.servings}/>
-                <IngredientsTable ingredients={menuResponse.item.ingredients}/>
+                {menuResponse.item.ingredients ? (
+                    <IngredientsTable ingredients={menuResponse.item.ingredients} />
+                ) : (
+                    <p>No ingredients available.</p>
+                )}
             </div>
 
             <div className='flex flex-col space-y-6'>
