@@ -28,4 +28,33 @@ interface Menu {
 }
 
 
-//---------------------------------------------------------
+//Fridge---------------------------------------------------------
+interface FridgeItem {
+  id: string;
+  user_id: string;
+  ingredient_id: string;
+  quantity: string;
+  added_date: { seconds: number };
+  expired_date: { seconds: number };
+}
+interface FridgeItemToUpdate { //+name, remaining amount (this field is for menu/[mid]/cook page)
+  id: string;
+  user_id: string;
+  name:string;
+  ingredient_id: string;
+  quantity: string;
+  remaining_amount: string;
+  added_date: { seconds: number };
+  expired_date: { seconds: number };
+}
+interface IngredientItem {
+  id: string;
+  name: string;
+  category: string;
+}
+
+//pop over---------------------------------------------------------
+interface SuccessPopOverProps {
+  name: string;
+  onClick: () => void;
+}

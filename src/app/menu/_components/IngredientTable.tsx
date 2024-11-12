@@ -1,14 +1,7 @@
 "use client"
 import TableRow from '@/components/ui/tableRow';
 
-export default function IngredientsTable() {
-  // Initial data for the table
-  const initialData = [
-    { ingredient: 'spaghetti', amount: '2 lbs', usedAmount: '2 lbs' },
-    { ingredient: 'Olive oil', amount: '500 ml', usedAmount: '500 ml' },
-    { ingredient: 'White wine', amount: '1 bottle', usedAmount: '1 bottle' },
-  ];
-
+export default function IngredientsTable({ingredients}:{ingredients:Ingredient[]}) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white">
@@ -20,11 +13,14 @@ export default function IngredientsTable() {
           </tr>
         </thead>
         <tbody>
-          {initialData.map((row) => (
+          {ingredients.map((ingredient) => (
             <TableRow
-              key={row.ingredient}
+              key={ingredient.ingredient_id}
               variant="default"
-              data={[row.ingredient, row.usedAmount]}
+              data={[
+                ingredient.name,  
+                ingredient.required_quantity, 
+              ]}
             />
           ))}
         </tbody>
