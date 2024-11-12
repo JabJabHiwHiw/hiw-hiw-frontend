@@ -13,10 +13,11 @@ import axios from 'axios'
 
 export function InputIngredientTable(props: {
   setRequiredIngredients: (ingredients: RequireIngredient[]) => void
+  ingredients?: RequireIngredient[]
 }) {
   const [reqIngredients, setReqIngredients] = React.useState<
     RequireIngredient[]
-  >([])
+  >(props.ingredients ? props.ingredients : [])
   const [ingredients, setIngredients] = useState<Ingredient[]>([])
   const { session } = useSession()
   useEffect(() => {
