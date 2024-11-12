@@ -96,8 +96,8 @@ export default function CustomTab(props: { userId: string }) {
                   description={menu.description}
                   id={menu.id}
                   imageUrl={
-                    menu.imageUrl
-                      ? menu.imageUrl
+                    menu.image_url
+                      ? menu.image_url
                       : 'https://www.gstatic.com/webp/gallery/1.jpg'
                   }
                   isFavorite={true}
