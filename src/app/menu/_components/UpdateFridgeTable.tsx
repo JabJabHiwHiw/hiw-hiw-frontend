@@ -137,7 +137,7 @@ export default function UpdateFridgeTable({ mid }: { mid: string }) {
               )
         )
         await Promise.all(requests)
-        router.refresh()
+        router.push('/fridge')
       }
     } catch (error) {
       console.error('Error updating fridge items:', error)

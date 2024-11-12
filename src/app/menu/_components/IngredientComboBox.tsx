@@ -63,7 +63,7 @@ export function IngredientComboBox({
                   key={ingredient.id}
                   value={ingredient.name}
                   onSelect={(currentValue) => {
-                    onChange(currentValue === value ? '' : currentValue) // Call the parent's onChange function
+                    onChange(currentValue === value ? '' : ingredient.id) // Call the parent's onChange function
                     setOpen(false)
                   }}
                 >

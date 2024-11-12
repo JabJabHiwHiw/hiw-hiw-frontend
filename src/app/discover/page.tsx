@@ -117,7 +117,7 @@ export default function DiscovePage() {
           .then((response) => {
             const fridgeData = response.data.items
             console.log('fridgeData:', fridgeData)
-            const filterByFridge = fridgeData.map(
+            const filterByFridge = fridgeData?.map(
               (item: { ingredient_id: string }) => {
                 return item.ingredient_id
               }
@@ -125,9 +125,10 @@ export default function DiscovePage() {
             return filterByFridge
           })
         fridgeItems.then((items) => {
-          const ingredient_requests = items.map((item: string) =>
+          const ingredient_requests = items?.map((item: string) =>
             axios.get(`http://137.184.249.83:80/food/ingredient/${item}`)
           )
+          if (!ingredient_requests) return
           const ingredientData = Promise.all(ingredient_requests).then(
             (responses) => {
               return responses.flatMap((response) => response.data)
@@ -195,7 +196,7 @@ export default function DiscovePage() {
   }, [filterCategoryMenus, searchMenus, filterFridgeMenus])
   console.log('viewmenus', viewMenus)
 
-  const categories: string[] = _.uniq(menus.map((menu) => menu.category))
+  const categories: string[] = _.uniq(menus?.map((menu) => menu.category))
   return (
     <div className="flex flex-col h1 text-primary-400 items-center md:px-[200px] px-[100px] gap-3 py-6">
       <div className="flex w-full md:justify-between gap-4 text-gray-400">
