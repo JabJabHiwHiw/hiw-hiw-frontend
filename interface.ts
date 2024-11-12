@@ -44,6 +44,7 @@ interface FridgeItemToUpdate { //+name, remaining amount (this field is for menu
   ingredient_id: string;
   quantity: string;
   remaining_amount: string;
+  deleteMode: boolean,
   added_date: { seconds: number };
   expired_date: { seconds: number };
 }
