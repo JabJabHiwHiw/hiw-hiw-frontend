@@ -44,8 +44,9 @@ export type UserData = {
 
 export type Notification = {
   id: string
-  message: string
+  body: string
   expireDate: string
+  read: boolean
 }
 
 export type FridgeItem = {
