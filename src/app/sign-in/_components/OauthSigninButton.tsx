@@ -20,7 +20,7 @@ export default function OauthSigninButton({
     return signIn.authenticateWithRedirect({
       strategy,
       redirectUrl: '/sign-up/sso-callback',
-      redirectUrlComplete: '/getuserdata',
+      redirectUrlComplete: '/discover',
     })
   }
 
