@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
-export default function SuccessPopOver({name}:{name:string}) {
+
+export default function SuccessPopOver({ name, onClick }: SuccessPopOverProps) {
   const [open, setOpen] = useState(false);
 
   const handleOpenChange = (isOpen: boolean) => {
@@ -23,7 +24,7 @@ export default function SuccessPopOver({name}:{name:string}) {
     <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <span className="flex items-center cursor-pointer">
-          <Button variant='outline' className='w-full' onClick={() => setOpen(true)}>{name}</Button>
+          <Button variant='outline' className='w-full' onClick={() => { onClick(); setOpen(true); }}>{name}</Button>
         </span>
       </PopoverTrigger>
       {open && (
@@ -33,8 +34,8 @@ export default function SuccessPopOver({name}:{name:string}) {
               <div className="flex items-center justify-center w-16 h-16 bg-green-500 rounded-full m-4">
                   <FontAwesomeIcon icon={faCheck} className="text-white w-1/2 h-1/2" />
               </div>
-              <h4 className="font-bold text-lg">Successfully Updated Fridge Items</h4>
-              <h5 className='h5 text-gray-300'>Your fridge is updated!</h5>
+              <div className="font-bold text-lg">Successfully Updated Fridge Items</div>
+              <div className='h5 text-gray-300'>Your fridge is updated!</div>
             </PopoverContent>
       )}
     </Popover>
