@@ -272,7 +272,7 @@ export default function FridgeModal({
                               {ingredients.map((ingredient) => (
                                 <CommandItem
                                   key={ingredient.id}
-                                  value={ingredient.id}
+                                  value={ingredient.name}
                                   onSelect={() => {
                                     form.setValue('ingredientId', ingredient.id)
                                     setOpenCombobox(false)

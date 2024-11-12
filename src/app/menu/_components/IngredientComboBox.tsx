@@ -61,7 +61,7 @@ export function IngredientComboBox({
               {ingredients.map((ingredient) => (
                 <CommandItem
                   key={ingredient.id}
-                  value={ingredient.id}
+                  value={ingredient.name}
                   onSelect={(currentValue) => {
                     onChange(currentValue === value ? '' : currentValue) // Call the parent's onChange function
                     setOpen(false)
