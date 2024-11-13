@@ -117,6 +117,7 @@ export default function DiscovePage() {
           .then((response) => {
             const fridgeData = response.data.items
             console.log('fridgeData:', fridgeData)
+            if (!fridgeData) return setFilterFridgeMenus([])
             const filterByFridge = fridgeData?.map(
               (item: { ingredient_id: string }) => {
                 return item.ingredient_id

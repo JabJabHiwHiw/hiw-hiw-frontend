@@ -25,7 +25,7 @@ export default function OauthSignIn() {
 
   useEffect(() => {
     if (session) {
-      router.push('/getuserdata')
+      router.push('/discover')
     }
   }, [session, router])
 
